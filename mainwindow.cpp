@@ -51,8 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plot->yAxis->setTickLabelColor(QColor(170,170,170));                              // See QCustomPlot examples / styled demo
     ui->plot->xAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::DotLine));
     ui->plot->yAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::DotLine));
-    ui->plot->xAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::DotLine));
-    ui->plot->yAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::DotLine));
+    ui->plot->xAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
+    ui->plot->yAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
     ui->plot->xAxis->grid()->setSubGridVisible(true);
     ui->plot->yAxis->grid()->setSubGridVisible(true);
     ui->plot->xAxis->setBasePen(QPen(QColor(170,170,170)));
@@ -128,6 +128,7 @@ void MainWindow::setupPlot()
     ui->plot->yAxis->setTickStep(10);                               // Set tick step according to user spin box
     ui->plot->yAxis->setRange(-200, 200);                           // Set lower and upper plot range
     ui->plot->xAxis->setRange(0, NUMBER_OF_POINTS);                 // Set x axis range for specified number of points
+    ui->plot->setPlottingHints(QCP::phFastPolylines);               // Graph/Curve lines are drawn with a faster method.
 
 }
 
@@ -212,7 +213,7 @@ void MainWindow::on_resetPlotButton_clicked()
     ui->plot->yAxis->setRange(-1000, 1000);
     ui->plot->xAxis->setRange(dataPointNumber - NUMBER_OF_POINTS, dataPointNumber);
     ui->plot->yAxis->setTickStep(100);
-    ui->plot->replot();
+    ui->plot->replot(QCustomPlot::rpQueued);
 }
 
 ///
@@ -246,7 +247,7 @@ void MainWindow::on_cbox_axis_x_pointes_changed(const QString &text)
       }
 
      ui->plot->xAxis->setRange(dataPointNumber - NUMBER_OF_POINTS, dataPointNumber);
-     ui->plot->replot();
+     ui->plot->replot(QCustomPlot::rpQueued);
 }
 
 ///
