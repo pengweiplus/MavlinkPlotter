@@ -24,17 +24,17 @@
 //4.
 
 typedef struct {
-    double_t mean;            //平均值
-    double_t variance;        //方差值
-    double_t max;             //最大值
-    double_t min;             //最小值
+    double mean;            //平均值
+    double variance;        //方差值
+    double max;             //最大值
+    double min;             //最小值
 
 }msgAttribute_t;
 
 typedef struct {
     const char *msgName;        //消息名称
     const char *fieldName;      //域名称
-    double_t rtValue;           //实时数据
+    double rtValue;           //实时数据
     msgAttribute_t attribute;   //属性域
     int dataType;               //数据类型
     int graphNum;               //graph

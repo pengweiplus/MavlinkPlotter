@@ -202,7 +202,6 @@ void MainWindow::on_stopPlotButton_clicked()
         plotting = true;
         ui->stopPlotButton->setText("Stop Plot");
     }
-
 }
 
 ///
@@ -389,6 +388,8 @@ void MainWindow::on_treeview_refresh()
                 disMavlinkMsg_t *tt = &(mavlinkThread->disMavlinkMsg.find(fullName).value());
                 QString rtValue = QString::number(tt->rtValue);
 
+
+
                 //刷新数据
                 itemMsg->child(itemField->row(),2)->setText(rtValue);
 
@@ -501,7 +502,7 @@ void MainWindow::treeItemChanged(QStandardItem * item)
 
 #ifdef RANDOM_COLOR
 
-       QColor c = QColor::fromHsl(qrand()%360,qrand()%256,qrand()%100+50);
+       QColor c = QColor::fromHsl(qrand()%360,128,128);
        QColor qc(c.red(),c.green(),c.blue());
        mapPlotGraph.insert(t->graphNum,qc);
        item->parent()->child(item->row(),1)->setBackground(QBrush(qc));
