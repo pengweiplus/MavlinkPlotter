@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plot->yAxis->setTickStep(100);                                                    // Set initial tick step
     ui->plot->xAxis->setTickLabelColor(QColor(170,170,170));                              // Tick labels color
     ui->plot->yAxis->setTickLabelColor(QColor(170,170,170));                              // See QCustomPlot examples / styled demo
-    ui->plot->xAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::DotLine));
+    ui->plot->xAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::NoPen));
     ui->plot->yAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::DotLine));
     ui->plot->xAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
     ui->plot->yAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
@@ -98,9 +98,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&treeviewTimer,SIGNAL(timeout()),this,SLOT(on_treeview_refresh()));
     connect(mavlinkThread,SIGNAL(sigNewMavlinkMsg(mavlink_message_t *)),this,SLOT(new_mavlink_msg(mavlink_message_t *)));
     connect(ui->cbox_axis_x_pointes,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(on_cbox_axis_x_pointes_changed(const QString &)));
-
-
-
 }
 /******************************************************************************************************************/
 
@@ -339,7 +336,7 @@ void MainWindow::startRefreshTimer()
     connected = true;                                                                     // Set flags
     plotting = true;
 
-    treeviewTimer.start(1000);
+    treeviewTimer.start(100);
     updateTimer.start(FREQ_OF_REFRESH);                                                   // Slot is refreshed 20 times per second
 }
 ///
@@ -362,6 +359,17 @@ void MainWindow::stopRefreshTimer()
 ///
 void MainWindow::on_treeview_refresh()
 {
+    static qint64 timestamp_last = 0;
+    bool is_freq_1hz = false;
+
+    //周期计算
+    qint64 timestamp = QDateTime::currentDateTime().toMSecsSinceEpoch(); //毫秒级
+    if((timestamp - timestamp_last)>1000){
+        is_freq_1hz = true;
+        timestamp_last = timestamp;
+    }else{
+        is_freq_1hz = false;
+    }
 
     //treeview列表循环刷新实时数值
     //0:第一列,mavlink消息名称
@@ -388,10 +396,10 @@ void MainWindow::on_treeview_refresh()
                 disMavlinkMsg_t *tt = &(mavlinkThread->disMavlinkMsg.find(fullName).value());
                 QString rtValue = QString::number(tt->rtValue);
 
-
-
                 //刷新数据
-                itemMsg->child(itemField->row(),2)->setText(rtValue);
+                if(is_freq_1hz){
+                    itemMsg->child(itemField->row(),2)->setText(rtValue);
+                }
 
                 //刷新倍率和偏移量到hash
                 tt->mulitNum = itemMsg->child(itemField->row(),3)->text().toDouble();
@@ -502,7 +510,7 @@ void MainWindow::treeItemChanged(QStandardItem * item)
 
 #ifdef RANDOM_COLOR
 
-       QColor c = QColor::fromHsl(qrand()%360,128,128);
+       QColor c = QColor::fromHsl(qrand()%12*30,255,128);
        QColor qc(c.red(),c.green(),c.blue());
        mapPlotGraph.insert(t->graphNum,qc);
        item->parent()->child(item->row(),1)->setBackground(QBrush(qc));
@@ -522,8 +530,6 @@ void MainWindow::treeItemChanged(QStandardItem * item)
 
 }
 
-
-
 ///
 /// \brief MainWindow::treeItemChanged
 /// \param item
@@ -531,6 +537,7 @@ void MainWindow::treeItemChanged(QStandardItem * item)
 ///
 void MainWindow::treeItemChanged(QStandardItem * item,disMavlinkMsg_t *t)
 {
+
     if(item == nullptr)
         return;
 
@@ -569,7 +576,7 @@ void MainWindow::treeItemChanged(QStandardItem * item,disMavlinkMsg_t *t)
 
 #ifdef RANDOM_COLOR
 
-       QColor c = QColor::fromHsl(qrand()%360,qrand()%256,qrand()%100+50);
+       QColor c = QColor::fromHsl(qrand()%12*30,255,128);
        QColor qc(c.red(),c.green(),c.blue());
        mapPlotGraph.insert(t->graphNum,qc);
        parentItem->child(item->row(),1)->setBackground(QBrush(qc));
