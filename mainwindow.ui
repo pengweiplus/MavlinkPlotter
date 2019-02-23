@@ -65,9 +65,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="saveJPGButton">
+         <widget class="QPushButton" name="saveDataLogButton">
           <property name="text">
-           <string>Save JPG</string>
+           <string>Start Log</string>
           </property>
          </widget>
         </item>
@@ -182,8 +182,16 @@
     </property>
     <addaction name="actionGeneral"/>
     <addaction name="actionCommLinks"/>
+    <addaction name="actionTurning"/>
+   </widget>
+   <widget class="QMenu" name="menu3D">
+    <property name="title">
+     <string>3D Model</string>
+    </property>
+    <addaction name="actionAntenna"/>
    </widget>
    <addaction name="menuConfig"/>
+   <addaction name="menu3D"/>
    <addaction name="menuHelo"/>
   </widget>
   <action name="actionHow_to_use">
@@ -204,6 +212,16 @@
   <action name="actionGeneral">
    <property name="text">
     <string>General</string>
+   </property>
+  </action>
+  <action name="actionAntenna">
+   <property name="text">
+    <string>Antenna</string>
+   </property>
+  </action>
+  <action name="actionTurning">
+   <property name="text">
+    <string>Turning</string>
    </property>
   </action>
  </widget>

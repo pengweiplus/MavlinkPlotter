@@ -1,84 +1,84 @@
 #pragma once
 // MESSAGE RTK_GPS PACKING
 
-#define MAVLINK_MSG_ID_RTK_GPS 154
+#define MAVLINK_MSG_ID_RTK_GPS 16
 
 MAVPACKED(
 typedef struct __mavlink_rtk_gps_t {
- float longitude; /*<  longitude component.*/
- float latitude; /*<   component.*/
- float azimuth; /*<   component.*/
- float height; /*<  longitude component.*/
- float speed; /*<   component.*/
- float orientation; /*<   component.*/
- float com_precision; /*<  longitude component.*/
- float level_precision; /*<   component.*/
- float vertical_precision; /*<   component.*/
- char status; /*<  status component.*/
- char number; /*<   component.*/
- char year; /*<   component.*/
- char month; /*<   component.*/
- char day; /*<   component.*/
- char hour; /*<   component.*/
- char minute; /*<   component.*/
- char second; /*<   component.*/
+ float longitude; /*<  longitude.(deg)*/
+ float latitude; /*<   latitude.(deg)*/
+ float azimuth; /*<   azimuth.(-180..180)(deg)*/
+ float height; /*<  height (-999.9..9999.9)(meter).*/
+ float speed; /*<   speed (000.0..999.9)(Knots).*/
+ float course; /*<   course (-180.0..180.0)(deg).*/
+ float pdop; /*<  pdop (0.5..99.9).*/
+ float hdop; /*<   hdop (0.5..99.9).*/
+ float vdop; /*<   vdop (0.5..99.9).*/
+ uint8_t fix_type; /*<  GPS fix type 1:no-fix,2:2D-fix,3:3D-fix.*/
+ uint8_t satellite_nums; /*<   satellite_nums (0..24)(GPS+BDS).*/
+ uint8_t year; /*<   component.*/
+ uint8_t month; /*<   component.*/
+ uint8_t day; /*<   component.*/
+ uint8_t hour; /*<   component.*/
+ uint8_t minute; /*<   component.*/
+ uint8_t second; /*<   component.*/
 }) mavlink_rtk_gps_t;
 
 #define MAVLINK_MSG_ID_RTK_GPS_LEN 44
 #define MAVLINK_MSG_ID_RTK_GPS_MIN_LEN 44
-#define MAVLINK_MSG_ID_154_LEN 44
-#define MAVLINK_MSG_ID_154_MIN_LEN 44
+#define MAVLINK_MSG_ID_16_LEN 44
+#define MAVLINK_MSG_ID_16_MIN_LEN 44
 
-#define MAVLINK_MSG_ID_RTK_GPS_CRC 195
-#define MAVLINK_MSG_ID_154_CRC 195
+#define MAVLINK_MSG_ID_RTK_GPS_CRC 220
+#define MAVLINK_MSG_ID_16_CRC 220
 
 
 
 #if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_RTK_GPS { \
-    154, \
+    16, \
     "RTK_GPS", \
     17, \
-    {  { "status", NULL, MAVLINK_TYPE_CHAR, 0, 36, offsetof(mavlink_rtk_gps_t, status) }, \
+    {  { "fix_type", NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(mavlink_rtk_gps_t, fix_type) }, \
          { "longitude", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_rtk_gps_t, longitude) }, \
          { "latitude", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_rtk_gps_t, latitude) }, \
          { "azimuth", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_rtk_gps_t, azimuth) }, \
          { "height", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_rtk_gps_t, height) }, \
          { "speed", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_rtk_gps_t, speed) }, \
-         { "orientation", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_rtk_gps_t, orientation) }, \
-         { "com_precision", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_rtk_gps_t, com_precision) }, \
-         { "level_precision", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_rtk_gps_t, level_precision) }, \
-         { "vertical_precision", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_rtk_gps_t, vertical_precision) }, \
-         { "number", NULL, MAVLINK_TYPE_CHAR, 0, 37, offsetof(mavlink_rtk_gps_t, number) }, \
-         { "year", NULL, MAVLINK_TYPE_CHAR, 0, 38, offsetof(mavlink_rtk_gps_t, year) }, \
-         { "month", NULL, MAVLINK_TYPE_CHAR, 0, 39, offsetof(mavlink_rtk_gps_t, month) }, \
-         { "day", NULL, MAVLINK_TYPE_CHAR, 0, 40, offsetof(mavlink_rtk_gps_t, day) }, \
-         { "hour", NULL, MAVLINK_TYPE_CHAR, 0, 41, offsetof(mavlink_rtk_gps_t, hour) }, \
-         { "minute", NULL, MAVLINK_TYPE_CHAR, 0, 42, offsetof(mavlink_rtk_gps_t, minute) }, \
-         { "second", NULL, MAVLINK_TYPE_CHAR, 0, 43, offsetof(mavlink_rtk_gps_t, second) }, \
+         { "course", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_rtk_gps_t, course) }, \
+         { "pdop", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_rtk_gps_t, pdop) }, \
+         { "hdop", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_rtk_gps_t, hdop) }, \
+         { "vdop", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_rtk_gps_t, vdop) }, \
+         { "satellite_nums", NULL, MAVLINK_TYPE_UINT8_T, 0, 37, offsetof(mavlink_rtk_gps_t, satellite_nums) }, \
+         { "year", NULL, MAVLINK_TYPE_UINT8_T, 0, 38, offsetof(mavlink_rtk_gps_t, year) }, \
+         { "month", NULL, MAVLINK_TYPE_UINT8_T, 0, 39, offsetof(mavlink_rtk_gps_t, month) }, \
+         { "day", NULL, MAVLINK_TYPE_UINT8_T, 0, 40, offsetof(mavlink_rtk_gps_t, day) }, \
+         { "hour", NULL, MAVLINK_TYPE_UINT8_T, 0, 41, offsetof(mavlink_rtk_gps_t, hour) }, \
+         { "minute", NULL, MAVLINK_TYPE_UINT8_T, 0, 42, offsetof(mavlink_rtk_gps_t, minute) }, \
+         { "second", NULL, MAVLINK_TYPE_UINT8_T, 0, 43, offsetof(mavlink_rtk_gps_t, second) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_RTK_GPS { \
     "RTK_GPS", \
     17, \
-    {  { "status", NULL, MAVLINK_TYPE_CHAR, 0, 36, offsetof(mavlink_rtk_gps_t, status) }, \
+    {  { "fix_type", NULL, MAVLINK_TYPE_UINT8_T, 0, 36, offsetof(mavlink_rtk_gps_t, fix_type) }, \
          { "longitude", NULL, MAVLINK_TYPE_FLOAT, 0, 0, offsetof(mavlink_rtk_gps_t, longitude) }, \
          { "latitude", NULL, MAVLINK_TYPE_FLOAT, 0, 4, offsetof(mavlink_rtk_gps_t, latitude) }, \
          { "azimuth", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_rtk_gps_t, azimuth) }, \
          { "height", NULL, MAVLINK_TYPE_FLOAT, 0, 12, offsetof(mavlink_rtk_gps_t, height) }, \
          { "speed", NULL, MAVLINK_TYPE_FLOAT, 0, 16, offsetof(mavlink_rtk_gps_t, speed) }, \
-         { "orientation", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_rtk_gps_t, orientation) }, \
-         { "com_precision", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_rtk_gps_t, com_precision) }, \
-         { "level_precision", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_rtk_gps_t, level_precision) }, \
-         { "vertical_precision", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_rtk_gps_t, vertical_precision) }, \
-         { "number", NULL, MAVLINK_TYPE_CHAR, 0, 37, offsetof(mavlink_rtk_gps_t, number) }, \
-         { "year", NULL, MAVLINK_TYPE_CHAR, 0, 38, offsetof(mavlink_rtk_gps_t, year) }, \
-         { "month", NULL, MAVLINK_TYPE_CHAR, 0, 39, offsetof(mavlink_rtk_gps_t, month) }, \
-         { "day", NULL, MAVLINK_TYPE_CHAR, 0, 40, offsetof(mavlink_rtk_gps_t, day) }, \
-         { "hour", NULL, MAVLINK_TYPE_CHAR, 0, 41, offsetof(mavlink_rtk_gps_t, hour) }, \
-         { "minute", NULL, MAVLINK_TYPE_CHAR, 0, 42, offsetof(mavlink_rtk_gps_t, minute) }, \
-         { "second", NULL, MAVLINK_TYPE_CHAR, 0, 43, offsetof(mavlink_rtk_gps_t, second) }, \
+         { "course", NULL, MAVLINK_TYPE_FLOAT, 0, 20, offsetof(mavlink_rtk_gps_t, course) }, \
+         { "pdop", NULL, MAVLINK_TYPE_FLOAT, 0, 24, offsetof(mavlink_rtk_gps_t, pdop) }, \
+         { "hdop", NULL, MAVLINK_TYPE_FLOAT, 0, 28, offsetof(mavlink_rtk_gps_t, hdop) }, \
+         { "vdop", NULL, MAVLINK_TYPE_FLOAT, 0, 32, offsetof(mavlink_rtk_gps_t, vdop) }, \
+         { "satellite_nums", NULL, MAVLINK_TYPE_UINT8_T, 0, 37, offsetof(mavlink_rtk_gps_t, satellite_nums) }, \
+         { "year", NULL, MAVLINK_TYPE_UINT8_T, 0, 38, offsetof(mavlink_rtk_gps_t, year) }, \
+         { "month", NULL, MAVLINK_TYPE_UINT8_T, 0, 39, offsetof(mavlink_rtk_gps_t, month) }, \
+         { "day", NULL, MAVLINK_TYPE_UINT8_T, 0, 40, offsetof(mavlink_rtk_gps_t, day) }, \
+         { "hour", NULL, MAVLINK_TYPE_UINT8_T, 0, 41, offsetof(mavlink_rtk_gps_t, hour) }, \
+         { "minute", NULL, MAVLINK_TYPE_UINT8_T, 0, 42, offsetof(mavlink_rtk_gps_t, minute) }, \
+         { "second", NULL, MAVLINK_TYPE_UINT8_T, 0, 43, offsetof(mavlink_rtk_gps_t, second) }, \
          } \
 }
 #endif
@@ -89,17 +89,17 @@ typedef struct __mavlink_rtk_gps_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param status  status component.
- * @param longitude  longitude component.
- * @param latitude   component.
- * @param azimuth   component.
- * @param height  longitude component.
- * @param speed   component.
- * @param orientation   component.
- * @param com_precision  longitude component.
- * @param level_precision   component.
- * @param vertical_precision   component.
- * @param number   component.
+ * @param fix_type  GPS fix type 1:no-fix,2:2D-fix,3:3D-fix.
+ * @param longitude  longitude.(deg)
+ * @param latitude   latitude.(deg)
+ * @param azimuth   azimuth.(-180..180)(deg)
+ * @param height  height (-999.9..9999.9)(meter).
+ * @param speed   speed (000.0..999.9)(Knots).
+ * @param course   course (-180.0..180.0)(deg).
+ * @param pdop  pdop (0.5..99.9).
+ * @param hdop   hdop (0.5..99.9).
+ * @param vdop   vdop (0.5..99.9).
+ * @param satellite_nums   satellite_nums (0..24)(GPS+BDS).
  * @param year   component.
  * @param month   component.
  * @param day   component.
@@ -109,7 +109,7 @@ typedef struct __mavlink_rtk_gps_t {
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_rtk_gps_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               char status, float longitude, float latitude, float azimuth, float height, float speed, float orientation, float com_precision, float level_precision, float vertical_precision, char number, char year, char month, char day, char hour, char minute, char second)
+                               uint8_t fix_type, float longitude, float latitude, float azimuth, float height, float speed, float course, float pdop, float hdop, float vdop, uint8_t satellite_nums, uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_RTK_GPS_LEN];
@@ -118,18 +118,18 @@ static inline uint16_t mavlink_msg_rtk_gps_pack(uint8_t system_id, uint8_t compo
     _mav_put_float(buf, 8, azimuth);
     _mav_put_float(buf, 12, height);
     _mav_put_float(buf, 16, speed);
-    _mav_put_float(buf, 20, orientation);
-    _mav_put_float(buf, 24, com_precision);
-    _mav_put_float(buf, 28, level_precision);
-    _mav_put_float(buf, 32, vertical_precision);
-    _mav_put_char(buf, 36, status);
-    _mav_put_char(buf, 37, number);
-    _mav_put_char(buf, 38, year);
-    _mav_put_char(buf, 39, month);
-    _mav_put_char(buf, 40, day);
-    _mav_put_char(buf, 41, hour);
-    _mav_put_char(buf, 42, minute);
-    _mav_put_char(buf, 43, second);
+    _mav_put_float(buf, 20, course);
+    _mav_put_float(buf, 24, pdop);
+    _mav_put_float(buf, 28, hdop);
+    _mav_put_float(buf, 32, vdop);
+    _mav_put_uint8_t(buf, 36, fix_type);
+    _mav_put_uint8_t(buf, 37, satellite_nums);
+    _mav_put_uint8_t(buf, 38, year);
+    _mav_put_uint8_t(buf, 39, month);
+    _mav_put_uint8_t(buf, 40, day);
+    _mav_put_uint8_t(buf, 41, hour);
+    _mav_put_uint8_t(buf, 42, minute);
+    _mav_put_uint8_t(buf, 43, second);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RTK_GPS_LEN);
 #else
@@ -139,12 +139,12 @@ static inline uint16_t mavlink_msg_rtk_gps_pack(uint8_t system_id, uint8_t compo
     packet.azimuth = azimuth;
     packet.height = height;
     packet.speed = speed;
-    packet.orientation = orientation;
-    packet.com_precision = com_precision;
-    packet.level_precision = level_precision;
-    packet.vertical_precision = vertical_precision;
-    packet.status = status;
-    packet.number = number;
+    packet.course = course;
+    packet.pdop = pdop;
+    packet.hdop = hdop;
+    packet.vdop = vdop;
+    packet.fix_type = fix_type;
+    packet.satellite_nums = satellite_nums;
     packet.year = year;
     packet.month = month;
     packet.day = day;
@@ -165,17 +165,17 @@ static inline uint16_t mavlink_msg_rtk_gps_pack(uint8_t system_id, uint8_t compo
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param status  status component.
- * @param longitude  longitude component.
- * @param latitude   component.
- * @param azimuth   component.
- * @param height  longitude component.
- * @param speed   component.
- * @param orientation   component.
- * @param com_precision  longitude component.
- * @param level_precision   component.
- * @param vertical_precision   component.
- * @param number   component.
+ * @param fix_type  GPS fix type 1:no-fix,2:2D-fix,3:3D-fix.
+ * @param longitude  longitude.(deg)
+ * @param latitude   latitude.(deg)
+ * @param azimuth   azimuth.(-180..180)(deg)
+ * @param height  height (-999.9..9999.9)(meter).
+ * @param speed   speed (000.0..999.9)(Knots).
+ * @param course   course (-180.0..180.0)(deg).
+ * @param pdop  pdop (0.5..99.9).
+ * @param hdop   hdop (0.5..99.9).
+ * @param vdop   vdop (0.5..99.9).
+ * @param satellite_nums   satellite_nums (0..24)(GPS+BDS).
  * @param year   component.
  * @param month   component.
  * @param day   component.
@@ -186,7 +186,7 @@ static inline uint16_t mavlink_msg_rtk_gps_pack(uint8_t system_id, uint8_t compo
  */
 static inline uint16_t mavlink_msg_rtk_gps_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   char status,float longitude,float latitude,float azimuth,float height,float speed,float orientation,float com_precision,float level_precision,float vertical_precision,char number,char year,char month,char day,char hour,char minute,char second)
+                                   uint8_t fix_type,float longitude,float latitude,float azimuth,float height,float speed,float course,float pdop,float hdop,float vdop,uint8_t satellite_nums,uint8_t year,uint8_t month,uint8_t day,uint8_t hour,uint8_t minute,uint8_t second)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_RTK_GPS_LEN];
@@ -195,18 +195,18 @@ static inline uint16_t mavlink_msg_rtk_gps_pack_chan(uint8_t system_id, uint8_t 
     _mav_put_float(buf, 8, azimuth);
     _mav_put_float(buf, 12, height);
     _mav_put_float(buf, 16, speed);
-    _mav_put_float(buf, 20, orientation);
-    _mav_put_float(buf, 24, com_precision);
-    _mav_put_float(buf, 28, level_precision);
-    _mav_put_float(buf, 32, vertical_precision);
-    _mav_put_char(buf, 36, status);
-    _mav_put_char(buf, 37, number);
-    _mav_put_char(buf, 38, year);
-    _mav_put_char(buf, 39, month);
-    _mav_put_char(buf, 40, day);
-    _mav_put_char(buf, 41, hour);
-    _mav_put_char(buf, 42, minute);
-    _mav_put_char(buf, 43, second);
+    _mav_put_float(buf, 20, course);
+    _mav_put_float(buf, 24, pdop);
+    _mav_put_float(buf, 28, hdop);
+    _mav_put_float(buf, 32, vdop);
+    _mav_put_uint8_t(buf, 36, fix_type);
+    _mav_put_uint8_t(buf, 37, satellite_nums);
+    _mav_put_uint8_t(buf, 38, year);
+    _mav_put_uint8_t(buf, 39, month);
+    _mav_put_uint8_t(buf, 40, day);
+    _mav_put_uint8_t(buf, 41, hour);
+    _mav_put_uint8_t(buf, 42, minute);
+    _mav_put_uint8_t(buf, 43, second);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RTK_GPS_LEN);
 #else
@@ -216,12 +216,12 @@ static inline uint16_t mavlink_msg_rtk_gps_pack_chan(uint8_t system_id, uint8_t 
     packet.azimuth = azimuth;
     packet.height = height;
     packet.speed = speed;
-    packet.orientation = orientation;
-    packet.com_precision = com_precision;
-    packet.level_precision = level_precision;
-    packet.vertical_precision = vertical_precision;
-    packet.status = status;
-    packet.number = number;
+    packet.course = course;
+    packet.pdop = pdop;
+    packet.hdop = hdop;
+    packet.vdop = vdop;
+    packet.fix_type = fix_type;
+    packet.satellite_nums = satellite_nums;
     packet.year = year;
     packet.month = month;
     packet.day = day;
@@ -246,7 +246,7 @@ static inline uint16_t mavlink_msg_rtk_gps_pack_chan(uint8_t system_id, uint8_t 
  */
 static inline uint16_t mavlink_msg_rtk_gps_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_rtk_gps_t* rtk_gps)
 {
-    return mavlink_msg_rtk_gps_pack(system_id, component_id, msg, rtk_gps->status, rtk_gps->longitude, rtk_gps->latitude, rtk_gps->azimuth, rtk_gps->height, rtk_gps->speed, rtk_gps->orientation, rtk_gps->com_precision, rtk_gps->level_precision, rtk_gps->vertical_precision, rtk_gps->number, rtk_gps->year, rtk_gps->month, rtk_gps->day, rtk_gps->hour, rtk_gps->minute, rtk_gps->second);
+    return mavlink_msg_rtk_gps_pack(system_id, component_id, msg, rtk_gps->fix_type, rtk_gps->longitude, rtk_gps->latitude, rtk_gps->azimuth, rtk_gps->height, rtk_gps->speed, rtk_gps->course, rtk_gps->pdop, rtk_gps->hdop, rtk_gps->vdop, rtk_gps->satellite_nums, rtk_gps->year, rtk_gps->month, rtk_gps->day, rtk_gps->hour, rtk_gps->minute, rtk_gps->second);
 }
 
 /**
@@ -260,24 +260,24 @@ static inline uint16_t mavlink_msg_rtk_gps_encode(uint8_t system_id, uint8_t com
  */
 static inline uint16_t mavlink_msg_rtk_gps_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_rtk_gps_t* rtk_gps)
 {
-    return mavlink_msg_rtk_gps_pack_chan(system_id, component_id, chan, msg, rtk_gps->status, rtk_gps->longitude, rtk_gps->latitude, rtk_gps->azimuth, rtk_gps->height, rtk_gps->speed, rtk_gps->orientation, rtk_gps->com_precision, rtk_gps->level_precision, rtk_gps->vertical_precision, rtk_gps->number, rtk_gps->year, rtk_gps->month, rtk_gps->day, rtk_gps->hour, rtk_gps->minute, rtk_gps->second);
+    return mavlink_msg_rtk_gps_pack_chan(system_id, component_id, chan, msg, rtk_gps->fix_type, rtk_gps->longitude, rtk_gps->latitude, rtk_gps->azimuth, rtk_gps->height, rtk_gps->speed, rtk_gps->course, rtk_gps->pdop, rtk_gps->hdop, rtk_gps->vdop, rtk_gps->satellite_nums, rtk_gps->year, rtk_gps->month, rtk_gps->day, rtk_gps->hour, rtk_gps->minute, rtk_gps->second);
 }
 
 /**
  * @brief Send a rtk_gps message
  * @param chan MAVLink channel to send the message
  *
- * @param status  status component.
- * @param longitude  longitude component.
- * @param latitude   component.
- * @param azimuth   component.
- * @param height  longitude component.
- * @param speed   component.
- * @param orientation   component.
- * @param com_precision  longitude component.
- * @param level_precision   component.
- * @param vertical_precision   component.
- * @param number   component.
+ * @param fix_type  GPS fix type 1:no-fix,2:2D-fix,3:3D-fix.
+ * @param longitude  longitude.(deg)
+ * @param latitude   latitude.(deg)
+ * @param azimuth   azimuth.(-180..180)(deg)
+ * @param height  height (-999.9..9999.9)(meter).
+ * @param speed   speed (000.0..999.9)(Knots).
+ * @param course   course (-180.0..180.0)(deg).
+ * @param pdop  pdop (0.5..99.9).
+ * @param hdop   hdop (0.5..99.9).
+ * @param vdop   vdop (0.5..99.9).
+ * @param satellite_nums   satellite_nums (0..24)(GPS+BDS).
  * @param year   component.
  * @param month   component.
  * @param day   component.
@@ -287,7 +287,7 @@ static inline uint16_t mavlink_msg_rtk_gps_encode_chan(uint8_t system_id, uint8_
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_rtk_gps_send(mavlink_channel_t chan, char status, float longitude, float latitude, float azimuth, float height, float speed, float orientation, float com_precision, float level_precision, float vertical_precision, char number, char year, char month, char day, char hour, char minute, char second)
+static inline void mavlink_msg_rtk_gps_send(mavlink_channel_t chan, uint8_t fix_type, float longitude, float latitude, float azimuth, float height, float speed, float course, float pdop, float hdop, float vdop, uint8_t satellite_nums, uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_RTK_GPS_LEN];
@@ -296,18 +296,18 @@ static inline void mavlink_msg_rtk_gps_send(mavlink_channel_t chan, char status,
     _mav_put_float(buf, 8, azimuth);
     _mav_put_float(buf, 12, height);
     _mav_put_float(buf, 16, speed);
-    _mav_put_float(buf, 20, orientation);
-    _mav_put_float(buf, 24, com_precision);
-    _mav_put_float(buf, 28, level_precision);
-    _mav_put_float(buf, 32, vertical_precision);
-    _mav_put_char(buf, 36, status);
-    _mav_put_char(buf, 37, number);
-    _mav_put_char(buf, 38, year);
-    _mav_put_char(buf, 39, month);
-    _mav_put_char(buf, 40, day);
-    _mav_put_char(buf, 41, hour);
-    _mav_put_char(buf, 42, minute);
-    _mav_put_char(buf, 43, second);
+    _mav_put_float(buf, 20, course);
+    _mav_put_float(buf, 24, pdop);
+    _mav_put_float(buf, 28, hdop);
+    _mav_put_float(buf, 32, vdop);
+    _mav_put_uint8_t(buf, 36, fix_type);
+    _mav_put_uint8_t(buf, 37, satellite_nums);
+    _mav_put_uint8_t(buf, 38, year);
+    _mav_put_uint8_t(buf, 39, month);
+    _mav_put_uint8_t(buf, 40, day);
+    _mav_put_uint8_t(buf, 41, hour);
+    _mav_put_uint8_t(buf, 42, minute);
+    _mav_put_uint8_t(buf, 43, second);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RTK_GPS, buf, MAVLINK_MSG_ID_RTK_GPS_MIN_LEN, MAVLINK_MSG_ID_RTK_GPS_LEN, MAVLINK_MSG_ID_RTK_GPS_CRC);
 #else
@@ -317,12 +317,12 @@ static inline void mavlink_msg_rtk_gps_send(mavlink_channel_t chan, char status,
     packet.azimuth = azimuth;
     packet.height = height;
     packet.speed = speed;
-    packet.orientation = orientation;
-    packet.com_precision = com_precision;
-    packet.level_precision = level_precision;
-    packet.vertical_precision = vertical_precision;
-    packet.status = status;
-    packet.number = number;
+    packet.course = course;
+    packet.pdop = pdop;
+    packet.hdop = hdop;
+    packet.vdop = vdop;
+    packet.fix_type = fix_type;
+    packet.satellite_nums = satellite_nums;
     packet.year = year;
     packet.month = month;
     packet.day = day;
@@ -342,7 +342,7 @@ static inline void mavlink_msg_rtk_gps_send(mavlink_channel_t chan, char status,
 static inline void mavlink_msg_rtk_gps_send_struct(mavlink_channel_t chan, const mavlink_rtk_gps_t* rtk_gps)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_rtk_gps_send(chan, rtk_gps->status, rtk_gps->longitude, rtk_gps->latitude, rtk_gps->azimuth, rtk_gps->height, rtk_gps->speed, rtk_gps->orientation, rtk_gps->com_precision, rtk_gps->level_precision, rtk_gps->vertical_precision, rtk_gps->number, rtk_gps->year, rtk_gps->month, rtk_gps->day, rtk_gps->hour, rtk_gps->minute, rtk_gps->second);
+    mavlink_msg_rtk_gps_send(chan, rtk_gps->fix_type, rtk_gps->longitude, rtk_gps->latitude, rtk_gps->azimuth, rtk_gps->height, rtk_gps->speed, rtk_gps->course, rtk_gps->pdop, rtk_gps->hdop, rtk_gps->vdop, rtk_gps->satellite_nums, rtk_gps->year, rtk_gps->month, rtk_gps->day, rtk_gps->hour, rtk_gps->minute, rtk_gps->second);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RTK_GPS, (const char *)rtk_gps, MAVLINK_MSG_ID_RTK_GPS_MIN_LEN, MAVLINK_MSG_ID_RTK_GPS_LEN, MAVLINK_MSG_ID_RTK_GPS_CRC);
 #endif
@@ -356,7 +356,7 @@ static inline void mavlink_msg_rtk_gps_send_struct(mavlink_channel_t chan, const
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_rtk_gps_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  char status, float longitude, float latitude, float azimuth, float height, float speed, float orientation, float com_precision, float level_precision, float vertical_precision, char number, char year, char month, char day, char hour, char minute, char second)
+static inline void mavlink_msg_rtk_gps_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint8_t fix_type, float longitude, float latitude, float azimuth, float height, float speed, float course, float pdop, float hdop, float vdop, uint8_t satellite_nums, uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
@@ -365,18 +365,18 @@ static inline void mavlink_msg_rtk_gps_send_buf(mavlink_message_t *msgbuf, mavli
     _mav_put_float(buf, 8, azimuth);
     _mav_put_float(buf, 12, height);
     _mav_put_float(buf, 16, speed);
-    _mav_put_float(buf, 20, orientation);
-    _mav_put_float(buf, 24, com_precision);
-    _mav_put_float(buf, 28, level_precision);
-    _mav_put_float(buf, 32, vertical_precision);
-    _mav_put_char(buf, 36, status);
-    _mav_put_char(buf, 37, number);
-    _mav_put_char(buf, 38, year);
-    _mav_put_char(buf, 39, month);
-    _mav_put_char(buf, 40, day);
-    _mav_put_char(buf, 41, hour);
-    _mav_put_char(buf, 42, minute);
-    _mav_put_char(buf, 43, second);
+    _mav_put_float(buf, 20, course);
+    _mav_put_float(buf, 24, pdop);
+    _mav_put_float(buf, 28, hdop);
+    _mav_put_float(buf, 32, vdop);
+    _mav_put_uint8_t(buf, 36, fix_type);
+    _mav_put_uint8_t(buf, 37, satellite_nums);
+    _mav_put_uint8_t(buf, 38, year);
+    _mav_put_uint8_t(buf, 39, month);
+    _mav_put_uint8_t(buf, 40, day);
+    _mav_put_uint8_t(buf, 41, hour);
+    _mav_put_uint8_t(buf, 42, minute);
+    _mav_put_uint8_t(buf, 43, second);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RTK_GPS, buf, MAVLINK_MSG_ID_RTK_GPS_MIN_LEN, MAVLINK_MSG_ID_RTK_GPS_LEN, MAVLINK_MSG_ID_RTK_GPS_CRC);
 #else
@@ -386,12 +386,12 @@ static inline void mavlink_msg_rtk_gps_send_buf(mavlink_message_t *msgbuf, mavli
     packet->azimuth = azimuth;
     packet->height = height;
     packet->speed = speed;
-    packet->orientation = orientation;
-    packet->com_precision = com_precision;
-    packet->level_precision = level_precision;
-    packet->vertical_precision = vertical_precision;
-    packet->status = status;
-    packet->number = number;
+    packet->course = course;
+    packet->pdop = pdop;
+    packet->hdop = hdop;
+    packet->vdop = vdop;
+    packet->fix_type = fix_type;
+    packet->satellite_nums = satellite_nums;
     packet->year = year;
     packet->month = month;
     packet->day = day;
@@ -410,19 +410,19 @@ static inline void mavlink_msg_rtk_gps_send_buf(mavlink_message_t *msgbuf, mavli
 
 
 /**
- * @brief Get field status from rtk_gps message
+ * @brief Get field fix_type from rtk_gps message
  *
- * @return  status component.
+ * @return  GPS fix type 1:no-fix,2:2D-fix,3:3D-fix.
  */
-static inline char mavlink_msg_rtk_gps_get_status(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_fix_type(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  36);
+    return _MAV_RETURN_uint8_t(msg,  36);
 }
 
 /**
  * @brief Get field longitude from rtk_gps message
  *
- * @return  longitude component.
+ * @return  longitude.(deg)
  */
 static inline float mavlink_msg_rtk_gps_get_longitude(const mavlink_message_t* msg)
 {
@@ -432,7 +432,7 @@ static inline float mavlink_msg_rtk_gps_get_longitude(const mavlink_message_t* m
 /**
  * @brief Get field latitude from rtk_gps message
  *
- * @return   component.
+ * @return   latitude.(deg)
  */
 static inline float mavlink_msg_rtk_gps_get_latitude(const mavlink_message_t* msg)
 {
@@ -442,7 +442,7 @@ static inline float mavlink_msg_rtk_gps_get_latitude(const mavlink_message_t* ms
 /**
  * @brief Get field azimuth from rtk_gps message
  *
- * @return   component.
+ * @return   azimuth.(-180..180)(deg)
  */
 static inline float mavlink_msg_rtk_gps_get_azimuth(const mavlink_message_t* msg)
 {
@@ -452,7 +452,7 @@ static inline float mavlink_msg_rtk_gps_get_azimuth(const mavlink_message_t* msg
 /**
  * @brief Get field height from rtk_gps message
  *
- * @return  longitude component.
+ * @return  height (-999.9..9999.9)(meter).
  */
 static inline float mavlink_msg_rtk_gps_get_height(const mavlink_message_t* msg)
 {
@@ -462,7 +462,7 @@ static inline float mavlink_msg_rtk_gps_get_height(const mavlink_message_t* msg)
 /**
  * @brief Get field speed from rtk_gps message
  *
- * @return   component.
+ * @return   speed (000.0..999.9)(Knots).
  */
 static inline float mavlink_msg_rtk_gps_get_speed(const mavlink_message_t* msg)
 {
@@ -470,53 +470,53 @@ static inline float mavlink_msg_rtk_gps_get_speed(const mavlink_message_t* msg)
 }
 
 /**
- * @brief Get field orientation from rtk_gps message
+ * @brief Get field course from rtk_gps message
  *
- * @return   component.
+ * @return   course (-180.0..180.0)(deg).
  */
-static inline float mavlink_msg_rtk_gps_get_orientation(const mavlink_message_t* msg)
+static inline float mavlink_msg_rtk_gps_get_course(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_float(msg,  20);
 }
 
 /**
- * @brief Get field com_precision from rtk_gps message
+ * @brief Get field pdop from rtk_gps message
  *
- * @return  longitude component.
+ * @return  pdop (0.5..99.9).
  */
-static inline float mavlink_msg_rtk_gps_get_com_precision(const mavlink_message_t* msg)
+static inline float mavlink_msg_rtk_gps_get_pdop(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_float(msg,  24);
 }
 
 /**
- * @brief Get field level_precision from rtk_gps message
+ * @brief Get field hdop from rtk_gps message
  *
- * @return   component.
+ * @return   hdop (0.5..99.9).
  */
-static inline float mavlink_msg_rtk_gps_get_level_precision(const mavlink_message_t* msg)
+static inline float mavlink_msg_rtk_gps_get_hdop(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_float(msg,  28);
 }
 
 /**
- * @brief Get field vertical_precision from rtk_gps message
+ * @brief Get field vdop from rtk_gps message
  *
- * @return   component.
+ * @return   vdop (0.5..99.9).
  */
-static inline float mavlink_msg_rtk_gps_get_vertical_precision(const mavlink_message_t* msg)
+static inline float mavlink_msg_rtk_gps_get_vdop(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_float(msg,  32);
 }
 
 /**
- * @brief Get field number from rtk_gps message
+ * @brief Get field satellite_nums from rtk_gps message
  *
- * @return   component.
+ * @return   satellite_nums (0..24)(GPS+BDS).
  */
-static inline char mavlink_msg_rtk_gps_get_number(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_satellite_nums(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  37);
+    return _MAV_RETURN_uint8_t(msg,  37);
 }
 
 /**
@@ -524,9 +524,9 @@ static inline char mavlink_msg_rtk_gps_get_number(const mavlink_message_t* msg)
  *
  * @return   component.
  */
-static inline char mavlink_msg_rtk_gps_get_year(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_year(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  38);
+    return _MAV_RETURN_uint8_t(msg,  38);
 }
 
 /**
@@ -534,9 +534,9 @@ static inline char mavlink_msg_rtk_gps_get_year(const mavlink_message_t* msg)
  *
  * @return   component.
  */
-static inline char mavlink_msg_rtk_gps_get_month(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_month(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  39);
+    return _MAV_RETURN_uint8_t(msg,  39);
 }
 
 /**
@@ -544,9 +544,9 @@ static inline char mavlink_msg_rtk_gps_get_month(const mavlink_message_t* msg)
  *
  * @return   component.
  */
-static inline char mavlink_msg_rtk_gps_get_day(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_day(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  40);
+    return _MAV_RETURN_uint8_t(msg,  40);
 }
 
 /**
@@ -554,9 +554,9 @@ static inline char mavlink_msg_rtk_gps_get_day(const mavlink_message_t* msg)
  *
  * @return   component.
  */
-static inline char mavlink_msg_rtk_gps_get_hour(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_hour(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  41);
+    return _MAV_RETURN_uint8_t(msg,  41);
 }
 
 /**
@@ -564,9 +564,9 @@ static inline char mavlink_msg_rtk_gps_get_hour(const mavlink_message_t* msg)
  *
  * @return   component.
  */
-static inline char mavlink_msg_rtk_gps_get_minute(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_minute(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  42);
+    return _MAV_RETURN_uint8_t(msg,  42);
 }
 
 /**
@@ -574,9 +574,9 @@ static inline char mavlink_msg_rtk_gps_get_minute(const mavlink_message_t* msg)
  *
  * @return   component.
  */
-static inline char mavlink_msg_rtk_gps_get_second(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_rtk_gps_get_second(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_char(msg,  43);
+    return _MAV_RETURN_uint8_t(msg,  43);
 }
 
 /**
@@ -593,12 +593,12 @@ static inline void mavlink_msg_rtk_gps_decode(const mavlink_message_t* msg, mavl
     rtk_gps->azimuth = mavlink_msg_rtk_gps_get_azimuth(msg);
     rtk_gps->height = mavlink_msg_rtk_gps_get_height(msg);
     rtk_gps->speed = mavlink_msg_rtk_gps_get_speed(msg);
-    rtk_gps->orientation = mavlink_msg_rtk_gps_get_orientation(msg);
-    rtk_gps->com_precision = mavlink_msg_rtk_gps_get_com_precision(msg);
-    rtk_gps->level_precision = mavlink_msg_rtk_gps_get_level_precision(msg);
-    rtk_gps->vertical_precision = mavlink_msg_rtk_gps_get_vertical_precision(msg);
-    rtk_gps->status = mavlink_msg_rtk_gps_get_status(msg);
-    rtk_gps->number = mavlink_msg_rtk_gps_get_number(msg);
+    rtk_gps->course = mavlink_msg_rtk_gps_get_course(msg);
+    rtk_gps->pdop = mavlink_msg_rtk_gps_get_pdop(msg);
+    rtk_gps->hdop = mavlink_msg_rtk_gps_get_hdop(msg);
+    rtk_gps->vdop = mavlink_msg_rtk_gps_get_vdop(msg);
+    rtk_gps->fix_type = mavlink_msg_rtk_gps_get_fix_type(msg);
+    rtk_gps->satellite_nums = mavlink_msg_rtk_gps_get_satellite_nums(msg);
     rtk_gps->year = mavlink_msg_rtk_gps_get_year(msg);
     rtk_gps->month = mavlink_msg_rtk_gps_get_month(msg);
     rtk_gps->day = mavlink_msg_rtk_gps_get_day(msg);

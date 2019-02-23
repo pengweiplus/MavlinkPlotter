@@ -73,7 +73,7 @@ public:
     /* mavlink */
     mavlink_message_t r_mav_msg;                    //消息帧[必要]
     mavlink_status_t r_mav_status;                  //解析器状态[必要]
-    QMap<QString,disMavlinkMsg_t> disMavlinkMsg;   //消息域Hash表
+    QMap<QString,disMavlinkMsg_t> disMavlinkMsg;    //消息域Hash表
 
 signals:
     void sigNewMavlinkMsg(mavlink_message_t *msg);

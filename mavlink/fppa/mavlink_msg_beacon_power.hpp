@@ -12,16 +12,19 @@ namespace msg {
  * BEACON_POWER PARAMETERS
  */
 struct BEACON_POWER : mavlink::Message {
-    static constexpr msgid_t MSG_ID = 155;
-    static constexpr size_t LENGTH = 6;
-    static constexpr size_t MIN_LENGTH = 6;
-    static constexpr uint8_t CRC_EXTRA = 178;
+    static constexpr msgid_t MSG_ID = 18;
+    static constexpr size_t LENGTH = 22;
+    static constexpr size_t MIN_LENGTH = 22;
+    static constexpr uint8_t CRC_EXTRA = 202;
     static constexpr auto NAME = "BEACON_POWER";
 
 
-    float power; /*<  power component. */
-    char isLock; /*<  lock component. */
-    char isValid; /*<  valid component. */
+    uint64_t time_boot_ms; /*< [ms] Timestamp (time since system boot). */
+    float frequency; /*<  The frequency of satellite signal (17.7GHz..22GHz). */
+    float power; /*<  The power of satellite signal dB. */
+    float LNB_voltage; /*<  The voltage of LNB(13.4V 18.2V 14.6V 19.4V 0v). */
+    uint8_t isLock; /*<  lock component(0:unlock 1:locked). */
+    uint8_t isValid; /*<  valid component(0:invalid 1:valid). */
 
 
     inline std::string get_name(void) const override
@@ -39,7 +42,10 @@ struct BEACON_POWER : mavlink::Message {
         std::stringstream ss;
 
         ss << NAME << ":" << std::endl;
+        ss << "  time_boot_ms: " << time_boot_ms << std::endl;
+        ss << "  frequency: " << frequency << std::endl;
         ss << "  power: " << power << std::endl;
+        ss << "  LNB_voltage: " << LNB_voltage << std::endl;
         ss << "  isLock: " << +isLock << std::endl;
         ss << "  isValid: " << +isValid << std::endl;
 
@@ -50,16 +56,22 @@ struct BEACON_POWER : mavlink::Message {
     {
         map.reset(MSG_ID, LENGTH);
 
-        map << power;                         // offset: 0
-        map << isLock;                        // offset: 4
-        map << isValid;                       // offset: 5
+        map << time_boot_ms;                  // offset: 0
+        map << frequency;                     // offset: 8
+        map << power;                         // offset: 12
+        map << LNB_voltage;                   // offset: 16
+        map << isLock;                        // offset: 20
+        map << isValid;                       // offset: 21
     }
 
     inline void deserialize(mavlink::MsgMap &map) override
     {
-        map >> power;                         // offset: 0
-        map >> isLock;                        // offset: 4
-        map >> isValid;                       // offset: 5
+        map >> time_boot_ms;                  // offset: 0
+        map >> frequency;                     // offset: 8
+        map >> power;                         // offset: 12
+        map >> LNB_voltage;                   // offset: 16
+        map >> isLock;                        // offset: 20
+        map >> isValid;                       // offset: 21
     }
 };
 

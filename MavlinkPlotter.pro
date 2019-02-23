@@ -18,43 +18,54 @@ SOURCES += main.cpp\
     helpwindow.cpp \
     settingWindow.cpp \
     mavPraseThread.cpp \
-    commConfig.cpp
+    commConfig.cpp \
+    io_manager.cpp \
+    msg_disposer.cpp \
+    msg_prase_thread.cpp \
+    turningWindows.cpp
 
 HEADERS  += mainwindow.hpp \
                 qcustomplot.h \
     helpwindow.hpp \
     settingWindow.h \
     mavPraseThread.h \
+    mavlink/checksum.h \
+    mavlink/mavlink_conversions.h \
+    mavlink/mavlink_get_info.h \
+    mavlink/mavlink_helpers.h \
+    mavlink/mavlink_sha256.h \
+    mavlink/mavlink_types.h \
+    mavlink/message.hpp \
+    mavlink/msgmap.hpp \
+    mavlink/protocol.h \
+    commConfig.h \
+    mavlink/checksum.h \
+    mavlink/mavlink_conversions.h \
+    mavlink/mavlink_get_info.h \
+    mavlink/mavlink_helpers.h \
+    mavlink/mavlink_sha256.h \
+    mavlink/mavlink_types.h \
+    mavlink/message.hpp \
+    mavlink/msgmap.hpp \
+    mavlink/protocol.h \
     mavlink/fppa/fppa.h \
     mavlink/fppa/fppa.hpp \
     mavlink/fppa/gtestsuite.hpp \
     mavlink/fppa/mavlink.h \
-    mavlink/fppa/mavlink_msg_ahrs.h \
-    mavlink/fppa/mavlink_msg_ahrs.hpp \
-    mavlink/fppa/mavlink_msg_ahrs2.h \
-    mavlink/fppa/mavlink_msg_ahrs2.hpp \
-    mavlink/fppa/mavlink_msg_ahrs3.h \
-    mavlink/fppa/mavlink_msg_ahrs3.hpp \
-    mavlink/fppa/mavlink_msg_attitude.h \
-    mavlink/fppa/mavlink_msg_attitude.hpp \
-    mavlink/fppa/mavlink_msg_attitude_quaternion.h \
-    mavlink/fppa/mavlink_msg_attitude_quaternion.hpp \
-    mavlink/fppa/mavlink_msg_attitude_target.h \
-    mavlink/fppa/mavlink_msg_attitude_target.hpp \
+    mavlink/fppa/mavlink_msg_attitude_beam.h \
+    mavlink/fppa/mavlink_msg_attitude_beam.hpp \
+    mavlink/fppa/mavlink_msg_attitude_beam_target.h \
+    mavlink/fppa/mavlink_msg_attitude_beam_target.hpp \
+    mavlink/fppa/mavlink_msg_attitude_body.h \
+    mavlink/fppa/mavlink_msg_attitude_body.hpp \
     mavlink/fppa/mavlink_msg_beacon_power.h \
     mavlink/fppa/mavlink_msg_beacon_power.hpp \
-    mavlink/fppa/mavlink_msg_command_long.h \
-    mavlink/fppa/mavlink_msg_command_long.hpp \
-    mavlink/fppa/mavlink_msg_gps_raw_int.h \
-    mavlink/fppa/mavlink_msg_gps_raw_int.hpp \
     mavlink/fppa/mavlink_msg_heartbeat.h \
     mavlink/fppa/mavlink_msg_heartbeat.hpp \
     mavlink/fppa/mavlink_msg_humiture.h \
     mavlink/fppa/mavlink_msg_humiture.hpp \
-    mavlink/fppa/mavlink_msg_local_position_ned.h \
-    mavlink/fppa/mavlink_msg_local_position_ned.hpp \
-    mavlink/fppa/mavlink_msg_manual_setpoint.h \
-    mavlink/fppa/mavlink_msg_manual_setpoint.hpp \
+    mavlink/fppa/mavlink_msg_motor_status.h \
+    mavlink/fppa/mavlink_msg_motor_status.hpp \
     mavlink/fppa/mavlink_msg_pid_tuning.h \
     mavlink/fppa/mavlink_msg_pid_tuning.hpp \
     mavlink/fppa/mavlink_msg_raw_imu.h \
@@ -72,12 +83,16 @@ HEADERS  += mainwindow.hpp \
     mavlink/message.hpp \
     mavlink/msgmap.hpp \
     mavlink/protocol.h \
-    commConfig.h
+    io_manager.h \
+    msg_disposer.h \
+    msg_prase_thread.h \
+    turningWindows.h
 
 
 FORMS    += mainwindow.ui \
     helpwindow.ui \
-    settingWindow.ui
+    settingWindow.ui \
+    turningWindows.ui
 
 RC_FILE = myapp.rc
 

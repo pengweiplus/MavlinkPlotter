@@ -37,6 +37,7 @@
 
 #include "helpwindow.hpp"
 #include "settingWindow.h"
+#include "turningWindows.h"
 
 
 #define WAIT_START      1
@@ -70,12 +71,15 @@ public:
 private slots:
     void on_stopPlotButton_clicked();                                                     // Starts and stops plotting
     void on_resetPlotButton_clicked();                                                    // Resets plot to initial zoom and coordinates
+    void on_saveDataLogButton_clicked();                                                  // start log data
 
     void onMouseMoveInPlot(QMouseEvent *event);                                           // Displays coordinates of mouse pointer when clicked in plot in status bar
     void replot();                                                                        // Slot for repainting the plot
 
+    void on_actionAntenna_triggered();
     void on_actionHow_to_use_triggered();
     void on_actionCommLinks_triggered();
+    void on_actionTurning_triggered();
     void on_cbox_axis_x_pointes_changed(const QString &text);
     void new_mavlink_msg(mavlink_message_t *msg);
     void on_treeview_refresh();
@@ -97,6 +101,8 @@ private:
 
     bool connected;                                                                       // Status connection variable
     bool plotting;                                                                        // Status plotting variable
+    bool logging;
+    QString filePath;
     int dataPointNumber;                                                                  // Keep track of data points
     QTimer updateTimer;                                                                   // Timer used for replotting the plot
     QTimer treeviewTimer;                                                                 // Timer used for replotting the treeview
@@ -109,6 +115,7 @@ private:
     //windows
     HelpWindow *helpWindow;                                                               // Help windows
     settingWindow *setupWindow;                                                           // Setup windows
+    turningWindows *turningWindow;                                                        // turningWindows
 
     //mavlink
     mavPraseThread *mavlinkThread;

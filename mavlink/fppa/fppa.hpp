@@ -21,7 +21,7 @@ namespace fppa {
 /**
  * Array of msg_entry needed for @p mavlink_parse_char() (trought @p mavlink_get_msg_entry())
  */
-constexpr std::array<mavlink_msg_entry_t, 16> MESSAGE_ENTRIES {{ {0, 50, 9, 0, 0, 0}, {24, 24, 30, 0, 0, 0}, {27, 144, 26, 0, 0, 0}, {30, 39, 28, 0, 0, 0}, {31, 246, 32, 0, 0, 0}, {32, 185, 28, 0, 0, 0}, {76, 152, 33, 3, 30, 31}, {81, 106, 22, 0, 0, 0}, {83, 22, 37, 0, 0, 0}, {154, 195, 44, 0, 0, 0}, {155, 178, 6, 0, 0, 0}, {156, 100, 8, 0, 0, 0}, {163, 127, 28, 0, 0, 0}, {178, 47, 24, 0, 0, 0}, {182, 229, 40, 0, 0, 0}, {194, 98, 25, 0, 0, 0} }};
+constexpr std::array<mavlink_msg_entry_t, 10> MESSAGE_ENTRIES {{ {0, 50, 9, 0, 0, 0}, {11, 47, 33, 0, 0, 0}, {12, 243, 93, 0, 0, 0}, {13, 11, 36, 0, 0, 0}, {14, 50, 40, 0, 0, 0}, {15, 161, 68, 0, 0, 0}, {16, 220, 44, 0, 0, 0}, {17, 3, 16, 0, 0, 0}, {18, 202, 22, 0, 0, 0}, {255, 47, 80, 0, 0, 0} }};
 
 //! MAVLINK VERSION
 constexpr auto MAVLINK_VERSION = 2;
@@ -129,21 +129,15 @@ constexpr auto MAV_STATE_ENUM_END = 8;
 
 // MESSAGE DEFINITIONS
 #include "./mavlink_msg_heartbeat.hpp"
-#include "./mavlink_msg_gps_raw_int.hpp"
+#include "./mavlink_msg_motor_status.hpp"
+#include "./mavlink_msg_attitude_body.hpp"
+#include "./mavlink_msg_attitude_beam_target.hpp"
+#include "./mavlink_msg_attitude_beam.hpp"
 #include "./mavlink_msg_raw_imu.hpp"
-#include "./mavlink_msg_attitude.hpp"
-#include "./mavlink_msg_attitude_quaternion.hpp"
-#include "./mavlink_msg_local_position_ned.hpp"
-#include "./mavlink_msg_command_long.hpp"
-#include "./mavlink_msg_manual_setpoint.hpp"
-#include "./mavlink_msg_attitude_target.hpp"
-#include "./mavlink_msg_ahrs.hpp"
-#include "./mavlink_msg_ahrs2.hpp"
-#include "./mavlink_msg_ahrs3.hpp"
-#include "./mavlink_msg_pid_tuning.hpp"
 #include "./mavlink_msg_rtk_gps.hpp"
-#include "./mavlink_msg_beacon_power.hpp"
 #include "./mavlink_msg_humiture.hpp"
+#include "./mavlink_msg_beacon_power.hpp"
+#include "./mavlink_msg_pid_tuning.hpp"
 
 // base include
 

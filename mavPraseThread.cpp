@@ -80,7 +80,6 @@ bool mavPraseThread::closeHardIf()
 ///
 void mavPraseThread::packetReceived(mavlink_message_t &msg)
 {
-
     //如果正确解析出一包完整数据,发射信号
     if(handleMessage(msg,disMavlinkMsg) == true){
 
@@ -203,6 +202,7 @@ bool mavPraseThread::handleMessage(mavlink_message_t &msg,QMap<QString,disMavlin
         //名称
         t.fieldName = msgInfo->fields[i].name;
         QString fieldName(t.fieldName);
+
         //类型
         t.dataType  = msgInfo->fields[i].type;
 

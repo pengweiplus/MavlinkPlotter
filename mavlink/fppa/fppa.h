@@ -17,8 +17,6 @@
 extern "C" {
 #endif
 
-#define MAVLINK_USE_MESSAGE_INFO
-
 // MESSAGE LENGTHS AND CRCS
 
 #ifndef MAVLINK_MESSAGE_LENGTHS
@@ -26,13 +24,13 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{0, 50, 9, 0, 0, 0}, {24, 24, 30, 0, 0, 0}, {27, 144, 26, 0, 0, 0}, {30, 39, 28, 0, 0, 0}, {31, 246, 32, 0, 0, 0}, {32, 185, 28, 0, 0, 0}, {76, 152, 33, 3, 30, 31}, {81, 106, 22, 0, 0, 0}, {83, 22, 37, 0, 0, 0}, {154, 195, 44, 0, 0, 0}, {155, 178, 6, 0, 0, 0}, {156, 100, 8, 0, 0, 0}, {163, 127, 28, 0, 0, 0}, {178, 47, 24, 0, 0, 0}, {182, 229, 40, 0, 0, 0}, {194, 98, 25, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{0, 50, 9, 0, 0, 0}, {11, 47, 33, 0, 0, 0}, {12, 243, 93, 0, 0, 0}, {13, 11, 36, 0, 0, 0}, {14, 50, 40, 0, 0, 0}, {15, 161, 68, 0, 0, 0}, {16, 220, 44, 0, 0, 0}, {17, 3, 16, 0, 0, 0}, {18, 202, 22, 0, 0, 0}, {255, 47, 80, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
 
 #define MAVLINK_ENABLED_FPPA
-
+#define MAVLINK_USE_MESSAGE_INFO
 // ENUM DEFINITIONS
 
 
@@ -135,6 +133,7 @@ typedef enum MAV_STATE
 #endif
 
 // MAVLINK VERSION
+
 #ifndef MAVLINK_VERSION
 #define MAVLINK_VERSION 2
 #endif
@@ -146,21 +145,15 @@ typedef enum MAV_STATE
 
 // MESSAGE DEFINITIONS
 #include "./mavlink_msg_heartbeat.h"
-#include "./mavlink_msg_gps_raw_int.h"
+#include "./mavlink_msg_motor_status.h"
+#include "./mavlink_msg_attitude_body.h"
+#include "./mavlink_msg_attitude_beam_target.h"
+#include "./mavlink_msg_attitude_beam.h"
 #include "./mavlink_msg_raw_imu.h"
-#include "./mavlink_msg_attitude.h"
-#include "./mavlink_msg_attitude_quaternion.h"
-#include "./mavlink_msg_local_position_ned.h"
-#include "./mavlink_msg_command_long.h"
-#include "./mavlink_msg_manual_setpoint.h"
-#include "./mavlink_msg_attitude_target.h"
-#include "./mavlink_msg_ahrs.h"
-#include "./mavlink_msg_ahrs2.h"
-#include "./mavlink_msg_ahrs3.h"
-#include "./mavlink_msg_pid_tuning.h"
 #include "./mavlink_msg_rtk_gps.h"
-#include "./mavlink_msg_beacon_power.h"
 #include "./mavlink_msg_humiture.h"
+#include "./mavlink_msg_beacon_power.h"
+#include "./mavlink_msg_pid_tuning.h"
 
 // base include
 
@@ -169,8 +162,8 @@ typedef enum MAV_STATE
 #define MAVLINK_THIS_XML_IDX 0
 
 #if MAVLINK_THIS_XML_IDX == MAVLINK_PRIMARY_XML_IDX
-# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_GPS_RAW_INT, MAVLINK_MESSAGE_INFO_RAW_IMU, MAVLINK_MESSAGE_INFO_ATTITUDE, MAVLINK_MESSAGE_INFO_ATTITUDE_QUATERNION, MAVLINK_MESSAGE_INFO_LOCAL_POSITION_NED, MAVLINK_MESSAGE_INFO_COMMAND_LONG, MAVLINK_MESSAGE_INFO_MANUAL_SETPOINT, MAVLINK_MESSAGE_INFO_ATTITUDE_TARGET, MAVLINK_MESSAGE_INFO_RTK_GPS, MAVLINK_MESSAGE_INFO_BEACON_POWER, MAVLINK_MESSAGE_INFO_HUMITURE, MAVLINK_MESSAGE_INFO_AHRS, MAVLINK_MESSAGE_INFO_AHRS2, MAVLINK_MESSAGE_INFO_AHRS3, MAVLINK_MESSAGE_INFO_PID_TUNING}
-# define MAVLINK_MESSAGE_NAMES {{ "AHRS", 163 }, { "AHRS2", 178 }, { "AHRS3", 182 }, { "ATTITUDE", 30 }, { "ATTITUDE_QUATERNION", 31 }, { "ATTITUDE_TARGET", 83 }, { "BEACON_POWER", 155 }, { "COMMAND_LONG", 76 }, { "GPS_RAW_INT", 24 }, { "HEARTBEAT", 0 }, { "HUMITURE", 156 }, { "LOCAL_POSITION_NED", 32 }, { "MANUAL_SETPOINT", 81 }, { "PID_TUNING", 194 }, { "RAW_IMU", 27 }, { "RTK_GPS", 154 }}
+# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_MOTOR_STATUS, MAVLINK_MESSAGE_INFO_ATTITUDE_BODY, MAVLINK_MESSAGE_INFO_ATTITUDE_BEAM_TARGET, MAVLINK_MESSAGE_INFO_ATTITUDE_BEAM, MAVLINK_MESSAGE_INFO_RAW_IMU, MAVLINK_MESSAGE_INFO_RTK_GPS, MAVLINK_MESSAGE_INFO_HUMITURE, MAVLINK_MESSAGE_INFO_BEACON_POWER, MAVLINK_MESSAGE_INFO_PID_TUNING}
+# define MAVLINK_MESSAGE_NAMES {{ "ATTITUDE_BEAM", 14 }, { "ATTITUDE_BEAM_TARGET", 13 }, { "ATTITUDE_BODY", 12 }, { "BEACON_POWER", 18 }, { "HEARTBEAT", 0 }, { "HUMITURE", 17 }, { "MOTOR_STATUS", 11 }, { "PID_TUNING", 255 }, { "RAW_IMU", 15 }, { "RTK_GPS", 16 }}
 # if MAVLINK_COMMAND_24BIT
 #  include "../mavlink_get_info.h"
 # endif

@@ -33,7 +33,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    connected(false), plotting(false),dataPointNumber(0), NUMBER_OF_POINTS(500),FREQ_OF_REFRESH(20),mavlinkThread(NULL)
+    connected(false), plotting(false),logging(false),dataPointNumber(0), NUMBER_OF_POINTS(500),FREQ_OF_REFRESH(20),mavlinkThread(NULL)
 {
     ui->setupUi(this);
     ui->plot->setBackground(QBrush(QColor(48,47,47)));                                    // Background for the plot area
@@ -73,11 +73,15 @@ MainWindow::MainWindow(QWidget *parent) :
     helpWindow = new HelpWindow(this);
     helpWindow->setWindowTitle("How to use this application");
 
-    //实例化通信接口设置串口类
+    //实例化通信接口设置类
     setupWindow = new settingWindow(this);
     setupWindow->setWindowTitle("Comm Link Settings");
     connect(setupWindow,SIGNAL(sig_comm_connect()),this,SLOT(on_sig_comm_connect()));
     connect(setupWindow,SIGNAL(sig_comm_disconnect()),this,SLOT(on_sig_comm_disconnect()));
+
+    //实例化调试窗口类
+    turningWindow = new turningWindows(this);
+    turningWindow->setWindowTitle("Turning Settings");
 
     //初始化mavlink工作线程
     mavlinkThread = new mavPraseThread();
@@ -155,6 +159,8 @@ void MainWindow::replot()
 
     QMap<QString,disMavlinkMsg_t>::iterator j;
 
+    QString f_msg_dield;
+
     //循环添加子节点
     for(j = mavlinkThread->disMavlinkMsg.begin(); j != mavlinkThread->disMavlinkMsg.end(); j++)
     {
@@ -171,7 +177,34 @@ void MainWindow::replot()
             ui->plot->graph(j.value().graphNum)->setPen(QPen(graphPen));
             ui->plot->graph(j.value().graphNum)->addData(dataPointNumber, (j.value().rtValue  + j.value().offsetNum) * j.value().mulitNum );
             ui->plot->graph(j.value().graphNum)->removeDataBefore(dataPointNumber - NUMBER_OF_POINTS);
+
+            //格式化打印log信息
+            if(logging){
+
+                QString field = QString(j.value().msgName)\
+                                +"."+QString(j.value().fieldName) \
+                                +"      "\
+                                + QString::number(j.value().rtValue)\
+                                +'\n';
+
+                f_msg_dield.append(field.data(),field.length());
+            }
         }
+    }
+
+    //记录log
+    if(!filePath.isEmpty() && logging){
+
+        QFile file(filePath);
+        QTextStream stream(&file);
+
+        //打开log文件并写入log
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
+        stream << f_msg_dield << endl;
+        f_msg_dield.clear();
+
+        //关闭日志文件
+        file.close();
     }
 
     dataPointNumber ++;
@@ -198,6 +231,37 @@ void MainWindow::on_stopPlotButton_clicked()
         updateTimer.start();                                                              // Start updating plot timer
         plotting = true;
         ui->stopPlotButton->setText("Stop Plot");
+    }
+}
+///
+/// \brief on_saveDataLogButton_clicked
+///
+void MainWindow::on_saveDataLogButton_clicked()
+{
+    if(logging){
+        logging = false;
+        ui->saveDataLogButton->setText("Start Log");
+
+        filePath.clear();
+
+    }else{
+
+        //get time
+        QDateTime current_date_time = QDateTime::currentDateTime();
+        QString current_date =current_date_time.toString("yyyy-MM-dd-hh-mm-ss");
+
+        //选择路径
+        QString filename = QFileDialog::getSaveFileName(this,tr("Save Log File"),current_date,tr("*.log"));
+        if(!filename.isEmpty()){
+
+            filePath = filename + ".log";
+            QFile file(filePath);
+            file.open( QIODevice::ReadWrite | QIODevice::Text );
+            file.close();
+
+            logging = true;
+            ui->saveDataLogButton->setText("Stop Log");
+        }
     }
 }
 
@@ -608,6 +672,13 @@ void MainWindow::on_actionHow_to_use_triggered()
     helpWindow->show();
 }
 
+void MainWindow::on_actionAntenna_triggered()
+{
+    QWidget * view3D = new QWidget;
+
+    view3D->show();
+}
+
 
 /******************************************************************************************************************/
 /* settingWindows */
@@ -619,6 +690,14 @@ void MainWindow::on_actionHow_to_use_triggered()
 void MainWindow::on_actionCommLinks_triggered()
 {
     setupWindow->show();
+}
+
+///
+/// \brief MainWindow::on_actionTurning_triggered
+///
+void MainWindow::on_actionTurning_triggered()
+{
+    turningWindow->show();
 }
 
 ///
