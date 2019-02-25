@@ -37,7 +37,7 @@
 
 #include "helpwindow.hpp"
 #include "settingWindow.h"
-#include "turningWindows.h"
+#include "turningSetting/turningWindows.h"
 
 
 #define WAIT_START      1

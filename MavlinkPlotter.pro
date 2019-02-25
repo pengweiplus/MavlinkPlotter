@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     io_manager.cpp \
     msg_disposer.cpp \
     msg_prase_thread.cpp \
-    turningWindows.cpp
+    turningSetting/turningWindows.cpp \
+    turningSetting/algorithmFuzzyPid.cpp
 
 HEADERS  += mainwindow.hpp \
                 qcustomplot.h \
@@ -86,13 +87,14 @@ HEADERS  += mainwindow.hpp \
     io_manager.h \
     msg_disposer.h \
     msg_prase_thread.h \
-    turningWindows.h
+    turningSetting/turningWindows.h \
+    turningSetting/algorithmFuzzyPid.h
 
 
 FORMS    += mainwindow.ui \
     helpwindow.ui \
     settingWindow.ui \
-    turningWindows.ui
+    turningSetting/ui/turningWindows.ui
 
 RC_FILE = myapp.rc
 
