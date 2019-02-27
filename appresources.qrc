@@ -11,6 +11,8 @@
         <file>Icons/barchart.png</file>
         <file>Icons/category.png</file>
         <file>Icons/feed.png</file>
+        <file>Icons/arrow_down.png</file>
+        <file>Icons/arrow_up.png</file>
     </qresource>
     <qresource prefix="/StyleSheet">
         <file>StyleSheet/style.qss</file>

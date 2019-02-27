@@ -22,6 +22,8 @@ private slots:
     void on_btn_fuzzy_pids_refresh_screen_clicked();
     void on_cbox_fuzzy_pids_axis_items_changed(int index);
     void on_cbox_fuzzy_pids_ctrl_items_changed(int index);
+    void on_hs_fuzzy_pids_derror_changed(int val);
+    void on_dsb_fuzzy_pids_derror_changed(double val);
 
 private:
     Ui::turningWindows *ui;                 //UI界面
@@ -34,24 +36,25 @@ private:
 
 
     //Fuzzy Pids
-    bool setupFuzzyPidTabView(int row,int col);                                 //设置模糊表头
-    bool setFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &tab);         //设置模糊表
-    bool getFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &tab);         //读取模糊表
+    bool setupFuzzyPidTabView(int row,int col);                                     //设置模糊表头
+    bool setFuzzyPidTableView(struct algorithmFuzzyPid::fuzzyTable_t &tab,
+                              algorithmFuzzyPid::CTRL ctrl);                        //设置模糊表
+    bool getFuzzyPidTableView(struct algorithmFuzzyPid::fuzzyTable_t &tab,
+                              algorithmFuzzyPid::CTRL ctrl);                        //读取模糊表
     void plotGraph(algorithmFuzzyPid &obj,
-                   algorithmFuzzyPid::AXIS axis,
-                   algorithmFuzzyPid::CTRL ctrl);                               //绘制模糊图形
+                   double derror);                                                  //绘制模糊图形
 
     //Basic Pids
     void getBasicPidsParams(struct algorithmFuzzyPid::fuzzyParams_t &polar,
                             struct algorithmFuzzyPid::fuzzyParams_t &pitch,
-                            struct algorithmFuzzyPid::fuzzyParams_t &yaw);
+                            struct algorithmFuzzyPid::fuzzyParams_t &yaw);          //读取PID参数
     void setBasicPidsParams(struct algorithmFuzzyPid::fuzzyParams_t &polar,
                             struct algorithmFuzzyPid::fuzzyParams_t &pitch,
-                            struct algorithmFuzzyPid::fuzzyParams_t &yaw);
+                            struct algorithmFuzzyPid::fuzzyParams_t &yaw);          //设置PID参数
 
     //Logic
-    void plotGraphSimulator(struct algorithm_fuzzy_pid_t &fuzzy,int item);
-    void setFuzzyTableAndReplotGraph();
+    void saveFuzzyDataAndReplotGraph();     //保存界面数据到对应数据结构
+    void loadFuzzyDataAndReplotGraph();     //载入数据结构中的数据到界面
 
 };
 

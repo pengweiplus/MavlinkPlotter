@@ -112,12 +112,12 @@ bool algorithmFuzzyPid::setFuzzyTable(struct fuzzyTable_t &tab,enum CTRL ctrl)
 }
 
 ///
-/// \brief algorithmFuzzyPid::getFuzzyTable
+/// \brief algorithmFuzzyPid::getFuzzyTableData
 /// 读取模糊表
 /// \param tab
 /// \return
 ///
-bool algorithmFuzzyPid::getFuzzyTable(struct fuzzyTable_t &tab)
+bool algorithmFuzzyPid::getFuzzyTableData(struct fuzzyTable_t &tab)
 {
     if(&tab == NULL) return false;
 
@@ -126,25 +126,25 @@ bool algorithmFuzzyPid::getFuzzyTable(struct fuzzyTable_t &tab)
 }
 
 ///
-/// \brief algorithmFuzzyPid::getFuzzyTable
+/// \brief algorithmFuzzyPid::getFuzzyTableData
 /// \param tab
 /// \param ctrl
 /// \return
 ///
-bool algorithmFuzzyPid::getFuzzyTable(struct fuzzyTable_t &tab,enum CTRL ctrl)
+bool algorithmFuzzyPid::getFuzzyTableData(struct fuzzyTable_t &tab,enum CTRL ctrl)
 {
 
     if(&tab == NULL) return false;
 
     switch (ctrl) {
     case CTRL_KP:
-        memcpy(&tab.ptab,&table.ptab,sizeof(table.ptab));
+        memcpy(tab.ptab,table.ptab,sizeof(table.ptab));
         break;
     case CTRL_KI:
-         memcpy(&tab.itab,&table.itab,sizeof(table.itab));
+         memcpy(tab.itab,table.itab,sizeof(table.ptab));
         break;
     case CTRL_KD:
-         memcpy(&tab.dtab,&table.dtab,sizeof(table.dtab));
+         memcpy(tab.dtab,table.dtab,sizeof(table.ptab));
         break;
     default:
         break;
@@ -182,18 +182,78 @@ bool algorithmFuzzyPid::getParams(struct fuzzyParams_t &para)
 }
 
 ///
-/// \brief getFuzzy
-/// \param fuzzyKp
-/// \param fuzzyKi
-/// \param fuzzyKd
+/// \brief algorithmFuzzyPid::getFuzzy
+/// \param obj
 /// \param error
 /// \param delta_error
 ///
-void algorithmFuzzyPid::getFuzzy(float &fuzzyKp,
-              float &fuzzyKi,
-              float &fuzzyKd,
+void algorithmFuzzyPid::getFuzzy(algorithmFuzzyPid &obj,
               float error,
               float delta_error)
 {
+    unsigned char  i,j;
+    float psum=0.0,isum=0.0,dsum=0.0;
+    float l_BP[10]={0,0,0,0,0,0,0,0,0,0};
+    float l_BD[10]={0,0,0,0,0,0,0,0,0,0};
 
+    /* 确定偏差位置 */
+    for(i=0; i<obj.table.row; i++){
+
+      if(error <= obj.table.Edot[i]) break;
+
+    }
+
+    /*
+     * 偏差位置分为两种情况(线性化处理偏差)
+     * 1. 处于两头
+     * 2. 处于中间
+     */
+    if(i==0)l_BP[0]=100;
+    else if(i == obj.table.row ) l_BP[obj.table.row-1] = 100;
+    else if(i > 0 && i<obj.table.row){
+
+      l_BP[i] 	= (float)100.0*(error-obj.table.Edot[i-1])/(obj.table.Edot[i]-obj.table.Edot[i-1]);
+      l_BP[i-1]	= (float)100.0*(obj.table.Edot[i]-error)/(obj.table.Edot[i]-obj.table.Edot[i-1]);
+
+    }
+
+    /* 确定微分位置 */
+    for(j=0;j<obj.table.col;j++){
+
+      if(delta_error<=obj.table.ECdot[j])break;
+
+    }
+
+    /*
+     * 微分位置分为两种情况(线性化处理偏差)
+     * 1. 处于两头
+     * 2. 处于中间
+     */
+    if(j==0)l_BD[0]=100;
+    else if(j==obj.table.col) l_BD[obj.table.col-1]=100;
+    else if(j>0 && j<obj.table.col){
+
+      l_BD[j]   = (float)100.0*(delta_error-obj.table.ECdot[j-1])/(obj.table.ECdot[j]-obj.table.ECdot[j-1]);
+      l_BD[j-1] = (float)100.0*(obj.table.ECdot[j]-delta_error)/(obj.table.ECdot[j]-obj.table.ECdot[j-1]);
+
+    }
+
+    /*
+     * 合成输出
+     */
+    for(i=0; i<obj.table.row; i++){
+
+      for(j=0; j<obj.table.col; j++){
+
+        psum+=(float)l_BP[i] * l_BD[j] * (obj.table.ptab[i][j]);
+        isum+=(float)l_BP[i] * l_BD[j] * (obj.table.itab[i][j]);
+        dsum+=(float)l_BP[i] * l_BD[j] * (obj.table.dtab[i][j]);
+
+      }
+    }
+
+    obj.table.kp = obj.params.kp * (psum/1000000.0);
+ //	   obj.table.ki = obj.params.ki * (isum/1000000.0);
+    obj.table.ki = obj.params.ki;
+    obj.table.kd = obj.params.kd * (dsum/1000000.0);
 }

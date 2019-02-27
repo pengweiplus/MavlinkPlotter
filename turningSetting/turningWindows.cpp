@@ -20,6 +20,8 @@ turningWindows::turningWindows(QWidget *parent) :
     connect(ui->btn_fuzzy_pids_refresh_screen,SIGNAL(clicked()),this,SLOT(on_btn_fuzzy_pids_refresh_screen_clicked()));
     connect(ui->cbox_fuzzy_pids_axis_items,SIGNAL(currentIndexChanged(int)),this,SLOT(on_cbox_fuzzy_pids_axis_items_changed(int)));
     connect(ui->cbox_fuzzy_pids_ctrl_items,SIGNAL(currentIndexChanged(int)),this,SLOT(on_cbox_fuzzy_pids_ctrl_items_changed(int)));
+    connect(ui->hs_fuzzy_pids_derror,SIGNAL(valueChanged(int)), this,SLOT(on_hs_fuzzy_pids_derror_changed(int)));
+//    connect(ui->dsb_fuzzy_pids_derror,SIGNAL(valueChanged(double)), this,SLOT(on_dsb_fuzzy_pids_derror_changed(double)));
 
 }
 
@@ -40,6 +42,8 @@ turningWindows::~turningWindows()
 ///
 bool turningWindows::setupFuzzyPidTabView(int row,int col)
 {
+    row = row;
+
     //添加表头
     model = new QStandardItemModel();
 
@@ -51,24 +55,27 @@ bool turningWindows::setupFuzzyPidTabView(int row,int col)
     labels = QObject::trUtf8("dError,NB,NM,NS,ZO,PS,PM,PB").simplified().split(",");
     model->setVerticalHeaderLabels(labels);
 
-    return true;
-}
-
-///
-/// \brief turningWindows::setFuzzyPidTable
-/// 设置二维模糊表格值
-/// \param tab
-/// \return
-///
-bool turningWindows::setFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &tab)
-{
-
-    /**************************设置表格属性*****************************/
+    //设置表格属性
     ui->tbv_fuzzy_pids_table->setModel(model);
     ui->tbv_fuzzy_pids_table->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui->tbv_fuzzy_pids_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tbv_fuzzy_pids_table->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
+    return true;
+}
+
+///
+/// \brief turningWindows::setFuzzyPidTableView
+/// 设置二维模糊表格值
+/// \param tab
+/// \return
+///
+bool turningWindows::setFuzzyPidTableView(struct algorithmFuzzyPid::fuzzyTable_t &tab,algorithmFuzzyPid::CTRL ctrl)
+{
+    //设置表格属性
+    setupFuzzyPidTabView(tab.row,tab.col);
+
+    //设置表格内容
     //添加ECdot、EECdot：
     for(int i = 0; i < tab.col; i++){
 
@@ -108,7 +115,9 @@ bool turningWindows::setFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &ta
              //设置模糊表
 
              //设置item数值
-             model->setItem(j+1,i+1,new QStandardItem( QString::number(tab.ptab[j][i],'f',1)));
+             if(algorithmFuzzyPid::CTRL_KP == ctrl) model->setItem(j+1,i+1,new QStandardItem( QString::number(tab.ptab[j][i],'f',1)));
+             if(algorithmFuzzyPid::CTRL_KI == ctrl) model->setItem(j+1,i+1,new QStandardItem( QString::number(tab.itab[j][i],'f',1)));
+             if(algorithmFuzzyPid::CTRL_KD == ctrl) model->setItem(j+1,i+1,new QStandardItem( QString::number(tab.dtab[j][i],'f',1)));
 
              //设置字符颜色
              model->item(j+1,i+1)->setForeground(QBrush(QColor(255, 255, 255)));
@@ -121,13 +130,17 @@ bool turningWindows::setFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &ta
 }
 
 ///
-/// \brief turningWindows::getFuzzyPidTable
+/// \brief turningWindows::getFuzzyPidTableView
 /// 读取二维模糊表格值
 /// \param tab
 /// \return
 ///
-bool turningWindows::getFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &tab)
+bool turningWindows::getFuzzyPidTableView(struct algorithmFuzzyPid::fuzzyTable_t &tab,algorithmFuzzyPid::CTRL ctrl)
 {
+    //读取行、列
+    tab.col = model->columnCount()-1;
+    tab.row = model->rowCount()-1;
+
     //读取ECdot、EECdot：
     for(int i = 0; i < tab.col; i++){
 
@@ -153,7 +166,9 @@ bool turningWindows::getFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &ta
 
          for(int j = 0; j < tab.row; j++){
              //读取item数值
-             tab.ptab[j][i] = model->item(j+1,i+1)->text().toFloat();
+             if(algorithmFuzzyPid::CTRL_KP == ctrl)tab.ptab[j][i] = model->item(j+1,i+1)->text().toFloat();
+             if(algorithmFuzzyPid::CTRL_KI == ctrl)tab.itab[j][i] = model->item(j+1,i+1)->text().toFloat();
+             if(algorithmFuzzyPid::CTRL_KD == ctrl)tab.dtab[j][i] = model->item(j+1,i+1)->text().toFloat();
         }
     }
     return true;
@@ -162,90 +177,80 @@ bool turningWindows::getFuzzyPidTable(struct algorithmFuzzyPid::fuzzyTable_t &ta
 ///
 /// \brief turningWindows::plotGraph
 /// \param obj
-/// \param axis
-/// \param ctrl
+/// \param derror
 ///
-void turningWindows::plotGraph(algorithmFuzzyPid &obj,algorithmFuzzyPid::AXIS axis,algorithmFuzzyPid::CTRL ctrl)
+void turningWindows::plotGraph(algorithmFuzzyPid &obj,double derror)
 {
     algorithmFuzzyPid::fuzzyTable_t tab;
-    float fuzzyKp = 0.0,fuzzyKi = 0.0,fuzzyKd = 0.0;
 
     //获取模糊表数据
-    obj.getFuzzyTable(tab,ctrl);
+    obj.getFuzzyTableData(tab);
 
-    //Remove all Graph
+    //清除现有图层
     for(int i = ui->cpl_fuzzy_pids_graph->graphCount(); i >= 0;i--){
         ui->cpl_fuzzy_pids_graph->removeGraph(i);
     }
 
     ui->cpl_fuzzy_pids_graph->clearItems();                                         // Remove everything from the plot
     ui->cpl_fuzzy_pids_graph->yAxis->setTickStep(10);                               // Set tick step according to user spin box
-    ui->cpl_fuzzy_pids_graph->yAxis->setRange(tab.ECdot[0], tab.ECdot[tab.col-1]);  // Set lower and upper plot range
+    ui->cpl_fuzzy_pids_graph->yAxis->setRange(0, tab.ECdot[tab.col-1]);  // Set lower and upper plot range
     ui->cpl_fuzzy_pids_graph->xAxis->setRange(tab.Edot[0], tab.Edot[tab.row-1]);    // Set x axis range for specified number of points
     ui->cpl_fuzzy_pids_graph->setPlottingHints(QCP::phFastPolylines);               // Graph/Curve lines are drawn with a faster method.
     ui->cpl_fuzzy_pids_graph->xAxis->setLabel("Error");
-    ui->cpl_fuzzy_pids_graph->yAxis->setLabel("dError");
+    ui->cpl_fuzzy_pids_graph->yAxis->setLabel("Val");
 
-    float eecdot[COL] = {EES,EEM,EEB};
+    //增加图层
+    ui->cpl_fuzzy_pids_graph->addGraph();
+    ui->cpl_fuzzy_pids_graph->addGraph();
+    ui->cpl_fuzzy_pids_graph->addGraph();
+
     //按照颜色绘制实时数据
     for(float x = tab.Edot[0];x < tab.Edot[tab.row-1];x+=0.1){
 
-        for(int i = 0; i<COL ;i++){
             //设定微分项
-            float y1 = eecdot[i];
+            float y1 = derror;
 
             //模糊计算
-            obj.getFuzzy(fuzzyKp,fuzzyKi,fuzzyKd,x,y1);
+            obj.getFuzzy(obj,x,y1);
+            obj.getFuzzyTableData(tab);
 
+
+            /****************KP***************/
             //设置颜色、线宽
             QPen graphPen(Qt::red);
             graphPen.setWidthF(1.5);
             graphPen.setStyle(Qt::SolidLine);
-            switch (ctrl) {
-            case algorithmFuzzyPid::CTRL_KP:{graphPen.setColor(Qt::red);}break;
-            case algorithmFuzzyPid::CTRL_KI:{graphPen.setColor(Qt::blue);}break;
-            case algorithmFuzzyPid::CTRL_KD:{graphPen.setColor(Qt::green);}break;
-            default:
-                break;
-            }
-
-            //增加图层
-            ui->cpl_fuzzy_pids_graph->addGraph();
+            graphPen.setColor(Qt::red);
 
             //绘制x-y曲线
-            ui->cpl_fuzzy_pids_graph->graph(i*2)->setPen(graphPen);
-
-            switch (ctrl) {
-            case algorithmFuzzyPid::CTRL_KP:{ui->cpl_fuzzy_pids_graph->graph(i*2)->addData(x,tab.kp);}break;
-            case algorithmFuzzyPid::CTRL_KI:{ui->cpl_fuzzy_pids_graph->graph(i*2)->addData(x,tab.ki);}break;
-            case algorithmFuzzyPid::CTRL_KD:{ui->cpl_fuzzy_pids_graph->graph(i*2)->addData(x,tab.kd);}break;
-            default:
-                break;
-            }
-
-
-            //设定微分项
-            float y2 = -y1;
-
-            //模糊计算
-            obj.getFuzzy(fuzzyKp,fuzzyKi,fuzzyKd,x,y2);
-
-            //增加图层
-            ui->cpl_fuzzy_pids_graph->addGraph();
-
-            //绘制x-y曲线
-            graphPen.setStyle(Qt::DotLine);
-            ui->cpl_fuzzy_pids_graph->graph(i*2+1)->setPen(graphPen);
-            switch (ctrl) {
-            case algorithmFuzzyPid::CTRL_KP:{ui->cpl_fuzzy_pids_graph->graph(i*2+1)->addData(x,-tab.kp);}break;
-            case algorithmFuzzyPid::CTRL_KI:{ui->cpl_fuzzy_pids_graph->graph(i*2+1)->addData(x,-tab.ki);}break;
-            case algorithmFuzzyPid::CTRL_KD:{ui->cpl_fuzzy_pids_graph->graph(i*2+1)->addData(x,-tab.kd);}break;
-            default:
-                break;
-            }
-
+            ui->cpl_fuzzy_pids_graph->graph(0)->setPen(graphPen);
+            ui->cpl_fuzzy_pids_graph->graph(0)->addData(x,tab.kp);
             ui->cpl_fuzzy_pids_graph->replot(QCustomPlot::rpQueued);
-        }
+
+            /****************KP***************/
+            //设置颜色、线宽
+            QPen graphPen1(Qt::blue);
+            graphPen.setWidthF(1.5);
+            graphPen.setStyle(Qt::SolidLine);
+            graphPen.setColor(Qt::red);
+
+            //绘制x-y曲线
+            ui->cpl_fuzzy_pids_graph->graph(1)->setPen(graphPen1);
+            ui->cpl_fuzzy_pids_graph->graph(1)->addData(x,tab.ki);
+            ui->cpl_fuzzy_pids_graph->replot(QCustomPlot::rpQueued);
+
+            /****************KD***************/
+            //设置颜色、线宽
+            QPen graphPen2(Qt::green);
+            graphPen.setWidthF(1.5);
+            graphPen.setStyle(Qt::SolidLine);
+            graphPen.setColor(Qt::red);
+
+            //绘制x-y曲线
+            ui->cpl_fuzzy_pids_graph->graph(2)->setPen(graphPen2);
+            ui->cpl_fuzzy_pids_graph->graph(2)->addData(x,tab.kd);
+            ui->cpl_fuzzy_pids_graph->replot(QCustomPlot::rpQueued);
+
     }
 }
 
@@ -335,150 +340,127 @@ void turningWindows::setBasicPidsParams(struct algorithmFuzzyPid::fuzzyParams_t 
 //------Logic
 
 ///
-/// \brief turningWindows::plotGraphSimulator
-/// \param fuzzy
-/// \param item
+/// \brief turningWindows::saveFuzzyDataAndReplotGraph
+/// 1、保存界面模糊表格、参数到对应存储的数据结构中；
+/// 2、重新绘制图形
 ///
-void turningWindows::plotGraphSimulator(struct algorithm_fuzzy_pid_t &fuzzy,int item)
+void turningWindows::saveFuzzyDataAndReplotGraph()
 {
-//    //Remove all Graph
-//    for(int i = ui->cpl_fuzzy_pids_graph->graphCount(); i >= 0;i--){
-//        ui->cpl_fuzzy_pids_graph->removeGraph(i);
-//    }
+    //获取当前选中的控制轴(Polar/Pitch/Yaw)
+    int axis = ui->cbox_fuzzy_pids_axis_items->currentIndex();
+    //获取当前选中的控制条目（KP/KI/KD）
+    int ctrl = ui->cbox_fuzzy_pids_ctrl_items->currentIndex();
+    //获取滑动条的微分值
+    double derror = ui->dsb_fuzzy_pids_derror->value();
 
-//    ui->cpl_fuzzy_pids_graph->clearItems();                                                           // Remove everything from the plot
-//    ui->cpl_fuzzy_pids_graph->yAxis->setTickStep(10);                                                 // Set tick step according to user spin box
-//    ui->cpl_fuzzy_pids_graph->yAxis->setRange(fuzzy.tab.ECdot[0], fuzzy.tab.ECdot[fuzzy.tab.col-1]);  // Set lower and upper plot range
-//    ui->cpl_fuzzy_pids_graph->xAxis->setRange(fuzzy.tab.Edot[0], fuzzy.tab.Edot[fuzzy.tab.row-1]);    // Set x axis range for specified number of points
-//    ui->cpl_fuzzy_pids_graph->setPlottingHints(QCP::phFastPolylines);                                 // Graph/Curve lines are drawn with a faster method.
-//    ui->cpl_fuzzy_pids_graph->xAxis->setLabel("Error");
-//    ui->cpl_fuzzy_pids_graph->yAxis->setLabel("dError");
+    //设置模糊表格&绘制图形
+    algorithmFuzzyPid::fuzzyTable_t tab;
+    algorithmFuzzyPid::fuzzyParams_t polar,pitch,yaw;
 
-//    float eecdot[3] = {EES,EEM,EEB};
-//    //按照颜色绘制实时数据
-//    for(float x = fuzzy.tab.Edot[0];x < fuzzy.tab.Edot[fuzzy.tab.row-1];x+=0.1){
+    //从pid参数界面中读取数据并保存到对应数据结构
+    getBasicPidsParams(polar,pitch,yaw);
+    fuzzyPidPolar->setParams(polar);
+    fuzzyPidPitch->setParams(pitch);
+    fuzzyPidYaw->setParams(yaw);
 
-//        for(int i = 0; i<3 ;i++){
-//            //设定微分项
-//            float y1 = eecdot[i];
+    //从表格中读取模糊表格数据并保存到对应数据结构
+    getFuzzyPidTableView(tab,(algorithmFuzzyPid::CTRL)ctrl);
 
-//            //模糊计算
-//            fuzzy_out(fuzzy,x,y1);
+    switch (axis) {
+        //rx polar
+        case 0:{
+            fuzzyPidPolar->setFuzzyTable(tab,(algorithmFuzzyPid::CTRL)ctrl);
+            //重新绘制2D图形
+            plotGraph(*fuzzyPidPolar,derror);
 
-//            //设置颜色、线宽
-//            QPen graphPen(Qt::red);
-//            graphPen.setWidthF(1.5);
-//            graphPen.setStyle(Qt::SolidLine);
-//            if(i == 0){graphPen.setColor(Qt::red);}
-//            else if(i == 1){ graphPen.setColor(Qt::blue);}
-//            else { graphPen.setColor(Qt::green);}
+        }break;
+        //rx pitch
+        case 1:{
+            fuzzyPidPitch->setFuzzyTable(tab,(algorithmFuzzyPid::CTRL)ctrl);
+            //重新绘制2D图形
+            plotGraph(*fuzzyPidPitch,derror);
+        }break;
+        //rx yaw
+        case 2:{
+            fuzzyPidYaw->setFuzzyTable(tab,(algorithmFuzzyPid::CTRL)ctrl);
+            //重新绘制2D图形
+            plotGraph(*fuzzyPidYaw,derror);
+        }break;
 
-//            //增加图层
-//            ui->cpl_fuzzy_pids_graph->addGraph();
-
-//            //绘制x-y曲线
-//            ui->cpl_fuzzy_pids_graph->graph(i*2)->setPen(graphPen);
-
-//            if(item == 0) ui->cpl_fuzzy_pids_graph->graph(i*2)->addData(x,fuzzy.tab.kp);
-//            if(item == 1) ui->cpl_fuzzy_pids_graph->graph(i*2)->addData(x,fuzzy.tab.ki);
-//            if(item == 2) ui->cpl_fuzzy_pids_graph->graph(i*2)->addData(x,fuzzy.tab.kd);
-
-//            //设定微分项
-//            float y2 = -y1;
-
-//            //模糊计算
-//            fuzzy_out(fuzzy,x,y2);
-
-//            //增加图层
-//            ui->cpl_fuzzy_pids_graph->addGraph();
-
-//            //绘制x-y曲线
-//            graphPen.setStyle(Qt::DotLine);
-//            ui->cpl_fuzzy_pids_graph->graph(i*2+1)->setPen(graphPen);
-//            if(item == 0) ui->cpl_fuzzy_pids_graph->graph(i*2+1)->addData(x,-fuzzy.tab.kp);
-//            if(item == 1) ui->cpl_fuzzy_pids_graph->graph(i*2+1)->addData(x,-fuzzy.tab.ki);
-//            if(item == 2) ui->cpl_fuzzy_pids_graph->graph(i*2+1)->addData(x,-fuzzy.tab.kd);
-
-//            ui->cpl_fuzzy_pids_graph->replot(QCustomPlot::rpQueued);
-//        }
-//    }
+        default:{}break;
+    }
 }
 
-
 ///
-/// \brief turningWindows::setFuzzyTableAndReplotGraph
+/// \brief turningWindows::loadFuzzyDataAndReplotGraph
+/// 1、对应存储的数据，设置到模糊表格、参数界面；
+/// 2、重新绘制图形
 ///
-void turningWindows::setFuzzyTableAndReplotGraph()
+void turningWindows::loadFuzzyDataAndReplotGraph()
 {
-//    switch (ui->cbox_fuzzy_pids_ctrl_items->currentIndex()) {
-//    case 0://rx polar
-//        //update table
-//        setFuzzyPidTable(rx_polar);
+    //获取当前选中的控制轴(Polar/Pitch/Yaw)
+    int axis = ui->cbox_fuzzy_pids_axis_items->currentIndex();
+    //获取当前选中的控制条目（KP/KI/KD）
+    int ctrl = ui->cbox_fuzzy_pids_ctrl_items->currentIndex();
+    //获取滑动条的微分值
+    double derror = ui->dsb_fuzzy_pids_derror->value();
 
-//        //update Graph
-//        plotGraphSimulator(rx_polar,ui->cbox_fuzzy_pids_ctrl_items->currentIndex());
-//        break;
+    //设置模糊表格&绘制图形
+    algorithmFuzzyPid::fuzzyTable_t tab;
+    algorithmFuzzyPid::fuzzyParams_t polar,pitch,yaw;
 
-//    case 1://rx pitch
-//        //update table
-//        setFuzzyPidTable(rx_pitch);
+    //从pid数据结构中读取数据并写入到对应参数界面
+    fuzzyPidPolar->getParams(polar);
+    fuzzyPidPitch->getParams(pitch);
+    fuzzyPidYaw->getParams(yaw);
+    setBasicPidsParams(polar,pitch,yaw);
 
-//        //update Graph
-//        plotGraphSimulator(rx_pitch,ui->cbox_fuzzy_pids_ctrl_items->currentIndex());
-//        break;
+    //从表格数据结构中读取数据并保存到对应模糊表格界面
+    switch (axis) {
+        //rx polar
+        case 0:{
+            fuzzyPidPolar->getFuzzyTableData(tab);
+            //重新绘制2D图形
+            plotGraph(*fuzzyPidPolar,derror);
 
-//    case 2://rx yaw
-//        //update table
-//        setFuzzyPidTable(rx_yaw);
+        }break;
+        //rx pitch
+        case 1:{
+            fuzzyPidPitch->getFuzzyTableData(tab);
+            //重新绘制2D图形
+            plotGraph(*fuzzyPidPitch,derror);
+        }break;
+        //rx yaw
+        case 2:{
+            fuzzyPidYaw->getFuzzyTableData(tab);
+            //重新绘制2D图形
+            plotGraph(*fuzzyPidYaw,derror);
+        }break;
 
-//        //update Graph
-//        plotGraphSimulator(rx_yaw,ui->cbox_fuzzy_pids_ctrl_items->currentIndex());
-//        break;
-
-//    default:
-//        break;
-//    }
+        default:{}break;
+    }
+    setFuzzyPidTableView(tab,(algorithmFuzzyPid::CTRL)ctrl);
 }
 
-//-------slots
+//-------pravate slots
 
 ///
 /// \brief turningWindows::on_tbv_fuzzy_pids_table_changed
+/// 槽函数：修改模糊表格
+/// 1、保存修改后的值到对应数据结构
+/// 2、重新绘制图形
 ///
 void turningWindows::on_tbv_fuzzy_pids_table_changed()
 {
-//    switch (ui->cbox_fuzzy_pids_ctrl_items->currentIndex()) {
-//    case 0://rx polar
-//        //update table
-//        getFuzzyPidTable(rx_polar);
-
-//        //update Graph
-//        plotGraphSimulator(rx_polar,ui->cbox_fuzzy_pids_ctrl_items->currentIndex());
-//        break;
-
-//    case 1://rx pitch
-//        //update table
-//        getFuzzyPidTable(rx_pitch);
-
-//        //update Graph
-//        plotGraphSimulator(rx_pitch,ui->cbox_fuzzy_pids_ctrl_items->currentIndex());
-//        break;
-
-//    case 2://rx yaw
-//        //update table
-//        getFuzzyPidTable(rx_yaw);
-
-//        //update Graph
-//        plotGraphSimulator(rx_yaw,ui->cbox_fuzzy_pids_ctrl_items->currentIndex());
-//        break;
-
-//    default:
-//        break;
-//    }
+    //保存参数到数据结构，并重新绘制图形
+    saveFuzzyDataAndReplotGraph();
 }
 
 ///
 /// \brief turningWindows::on_btn_fuzzy_pids_refresh_screen_clicked
+/// 槽函数：读取下位机数据
+/// 1、将接收到的数据更新到对应数据结构中
+/// 2、重新绘制图形
 ///
 void turningWindows::on_btn_fuzzy_pids_refresh_screen_clicked()
 {
@@ -488,20 +470,82 @@ void turningWindows::on_btn_fuzzy_pids_refresh_screen_clicked()
 
 ///
 /// \brief turningWindows::on_cbox_fuzzy_pids_axis_items_changed
+/// 槽函数：控制轴更新
+/// 1、从对应数据结构中读取出数据
+/// 2、重新绘制图形
 ///
 void turningWindows::on_cbox_fuzzy_pids_axis_items_changed(int index)
 {
-//    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
-//    setFuzzyTableAndReplotGraph();
-//    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    index= index;
+    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    loadFuzzyDataAndReplotGraph();
+    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
 }
 
 ///
 /// \brief turningWindows::on_cbox_fuzzy_pids_ctrl_items_changed
+/// 槽函数：控制条目更新
+/// 1、从对应数据结构中读取出数据
+/// 2、重新绘制图形
 ///
 void turningWindows::on_cbox_fuzzy_pids_ctrl_items_changed(int index)
 {
-//    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
-//    setFuzzyTableAndReplotGraph();
-//    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    index = index;
+    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    loadFuzzyDataAndReplotGraph();
+    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+}
+
+///
+/// \brief turningWindows::on_hs_fuzzy_pids_derror_changed
+/// \param val
+/// 槽函数：微分值手动更新
+/// 1、从对应数据结构中读取出数据
+/// 2、重新绘制图形
+///
+void turningWindows::on_hs_fuzzy_pids_derror_changed(int val)
+{
+    double derror = val/10.0;
+    ui->dsb_fuzzy_pids_derror->setValue(derror);
+
+    //获取当前选中的控制轴(Polar/Pitch/Yaw)
+    int axis = ui->cbox_fuzzy_pids_axis_items->currentIndex();
+
+    //重新绘制2D图形
+    switch (axis) {
+        //rx polar
+        case 0:{plotGraph(*fuzzyPidPolar,derror);}break;
+        //rx pitch
+        case 1:{plotGraph(*fuzzyPidPitch,derror);}break;
+        //rx yaw
+        case 2:{plotGraph(*fuzzyPidYaw,derror);}break;
+
+        default:{}break;
+    }
+}
+
+///
+/// \brief turningWindows::on_dsb_fuzzy_pids_derror_changed
+/// \param val
+///
+void turningWindows::on_dsb_fuzzy_pids_derror_changed(double val)
+{
+    int tmp = val*10;
+
+    ui->hs_fuzzy_pids_derror->setValue(tmp);
+
+    //获取当前选中的控制轴(Polar/Pitch/Yaw)
+    int axis = ui->cbox_fuzzy_pids_axis_items->currentIndex();
+
+    //重新绘制2D图形
+    switch (axis) {
+        //rx polar
+        case 0:{plotGraph(*fuzzyPidPolar,val);}break;
+        //rx pitch
+        case 1:{plotGraph(*fuzzyPidPitch,val);}break;
+        //rx yaw
+        case 2:{plotGraph(*fuzzyPidYaw,val);}break;
+
+        default:{}break;
+    }
 }

@@ -137,7 +137,7 @@ QWidget:focus, QMenuBar:focus
 
 QTabWidget:focus, QCheckBox:focus, QRadioButton:focus
 {
-    border: none;
+    border:1px solid #666858;
 }
 
 QLineEdit
@@ -1009,4 +1009,77 @@ QStatusBar::item {
     border-radius: 3px;
  }
 
+QSpinBox {
+	/* 为箭头保留空间 */
+	padding-right:20px;
+	background:#666865;
+	min-width:40px;
+}
+
+/* 向上按钮 */
+QSpinBox::up-button {
+	subcontrol-origin:border;
+	subcontrol-position:top right;
+	width:14px;
+	height:14px;
+}
+
+/* 向上按钮里的小箭头 */
+QSpinBox::up-arrow {
+	image:url(:/Icons/Icons/arrow_up.png);
+	width:14px;
+	height:14px;
+}
+
+/* 向下按钮 */
+QSpinBox::down-button {
+	subcontrol-origin:border;
+	subcontrol-position:bottom right;
+	width:14px;
+	height:14px;
+}
+
+/* 向下按钮里的小箭头 */
+QSpinBox::down-arrow {
+	image:url(:/Icons/Icons/arrow_down.png);
+	width:14px;
+	height:14px;
+}
+
+QDoubleSpinBox {
+	/* 为箭头保留空间 */
+	padding-right:20px;
+	background:#666865;
+	min-width:40px;
+}
+
+/* 向上按钮 */
+QDoubleSpinBox::up-button {
+	subcontrol-origin:border;
+	subcontrol-position:top right;
+	width:14px;
+	height:14px;
+}
+
+/* 向上按钮里的小箭头 */
+QDoubleSpinBox::up-arrow {
+	image:url(:/Icons/Icons/arrow_up.png);
+	width:14px;
+	height:14px;
+}
+
+/* 向下按钮 */
+QDoubleSpinBox::down-button {
+	subcontrol-origin:border;
+	subcontrol-position:bottom right;
+	width:14px;
+	height:14px;
+}
+
+/* 向下按钮里的小箭头 */
+QDoubleSpinBox::down-arrow {
+	image:url(:/Icons/Icons/arrow_down.png);
+	width:14px;
+	height:14px;
+}
 

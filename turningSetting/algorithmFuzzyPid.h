@@ -88,19 +88,17 @@ public:
     bool setFuzzyTable(struct fuzzyTable_t &tab);       //设置模糊表数据
     bool setFuzzyTable(struct fuzzyTable_t &tab,        //设置模糊表数据
                        enum CTRL ctrl);
-    bool getFuzzyTable(struct fuzzyTable_t &tab);       //读取模糊表格
-    bool getFuzzyTable(struct fuzzyTable_t &tab,        //读取模糊表格
+    bool getFuzzyTableData(struct fuzzyTable_t &tab);   //读取模糊表格
+    bool getFuzzyTableData(struct fuzzyTable_t &tab,    //读取模糊表格
                        enum CTRL ctrl);
     bool setParams(struct fuzzyParams_t &para);         //设置默认数据
     bool getParams(struct fuzzyParams_t &para);         //读取默认数据
-    void getFuzzy(float &fuzzyKp,                       //执行模糊化算法
-                  float &fuzzyKi,
-                  float &fuzzyKd,
+    void getFuzzy(algorithmFuzzyPid &obj,               //执行模糊化算法
                   float error,
                   float delta_error);
 private:
-    fuzzyTable_t table;
-    fuzzyParams_t params;
+    struct fuzzyTable_t table;                          //模糊表格
+    struct fuzzyParams_t params;                        //PID参数
 };
 
 #endif // ALGORITHMFUZZYPID_H

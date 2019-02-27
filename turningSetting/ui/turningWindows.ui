@@ -46,6 +46,9 @@
                   <property name="text">
                    <string>Kp:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -70,6 +73,9 @@
                   <property name="text">
                    <string>Ki:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -93,6 +99,9 @@
                  <widget class="QLabel" name="label_basic_pids_polar_kd">
                   <property name="text">
                    <string>Kd:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -127,6 +136,9 @@
                   <property name="text">
                    <string>Integral Max:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -147,6 +159,9 @@
                  <widget class="QLabel" name="label_basic_pids_polar_i_dz">
                   <property name="text">
                    <string>Integral DZ:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -169,6 +184,9 @@
                   <property name="text">
                    <string>Output Max:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -186,6 +204,9 @@
                  <widget class="QLabel" name="label_basic_pids_polar_lpf_fcut">
                   <property name="text">
                    <string>LPF fCut(Hz): </string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -209,6 +230,9 @@
                  <widget class="QLabel" name="label_basic_pids_pitch_kp">
                   <property name="text">
                    <string>Kp:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -234,6 +258,9 @@
                   <property name="text">
                    <string>Ki:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -257,6 +284,9 @@
                  <widget class="QLabel" name="label_basic_pids_pitch_kd">
                   <property name="text">
                    <string>Kd:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -288,6 +318,9 @@
                   <property name="text">
                    <string>Integral Max:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -305,6 +338,9 @@
                  <widget class="QLabel" name="label_basic_pids_pitch_i_dz">
                   <property name="text">
                    <string>Integral DZ:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -327,6 +363,9 @@
                   <property name="text">
                    <string>Output Max:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -344,6 +383,9 @@
                  <widget class="QLabel" name="label_basic_pids_pitch_lpf_fcut">
                   <property name="text">
                    <string>LPF fCut(Hz): </string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -367,6 +409,9 @@
                  <widget class="QLabel" name="label_basic_pids_yaw_kp">
                   <property name="text">
                    <string>Kp:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -392,6 +437,9 @@
                   <property name="text">
                    <string>Ki:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -415,6 +463,9 @@
                  <widget class="QLabel" name="label_basic_pids_yaw_kd">
                   <property name="text">
                    <string>Kd:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -452,6 +503,9 @@
                   <property name="text">
                    <string>Integral Max:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -469,6 +523,9 @@
                  <widget class="QLabel" name="label_basic_pids_yaw_i_dz">
                   <property name="text">
                    <string>Integral DZ:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -488,6 +545,9 @@
                   <property name="text">
                    <string>Output Max:</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -505,6 +565,9 @@
                  <widget class="QLabel" name="label_basic_pids_yaw_lpf_fcut">
                   <property name="text">
                    <string>LPF fCut(Hz): </string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -552,7 +615,7 @@
         <attribute name="title">
          <string>Fuzzy PIDs</string>
         </attribute>
-        <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="4,6">
+        <layout class="QHBoxLayout" name="horizontalLayout_26">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
@@ -565,11 +628,43 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_23">
+              <layout class="QHBoxLayout" name="horizontalLayout_23" stretch="1,1,1,3">
                <item>
-                <widget class="QLabel" name="label_fuzzy_pids_items">
+                <widget class="QLabel" name="label_fuzzy_pids_ctrl_items">
                  <property name="text">
-                  <string>Items:</string>
+                  <string>Table:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="cbox_fuzzy_pids_ctrl_items">
+                 <item>
+                  <property name="text">
+                   <string>Kp</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Ki</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Kd</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_fuzzy_pids_axis_items">
+                 <property name="text">
+                  <string>Graph:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -588,25 +683,6 @@
                  <item>
                   <property name="text">
                    <string>Rx Yaw Axis</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="cbox_fuzzy_pids_ctrl_items">
-                 <item>
-                  <property name="text">
-                   <string>Kp</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Ki</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Kd</string>
                   </property>
                  </item>
                 </widget>
@@ -639,7 +715,45 @@
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,100">
+          <layout class="QVBoxLayout" name="verticalLayout_9" stretch="100,5,0">
+           <item>
+            <widget class="QCustomPlot" name="cpl_fuzzy_pids_graph" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_10"/>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_25">
+             <item>
+              <widget class="QSlider" name="hs_fuzzy_pids_derror">
+               <property name="minimum">
+                <number>-50</number>
+               </property>
+               <property name="maximum">
+                <number>50</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="dsb_fuzzy_pids_derror">
+               <property name="minimum">
+                <double>-5.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
            <item>
             <spacer name="horizontalSpacer">
              <property name="orientation">
@@ -647,14 +761,11 @@
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>40</width>
-               <height>10</height>
+               <width>431</width>
+               <height>13</height>
               </size>
              </property>
             </spacer>
-           </item>
-           <item>
-            <widget class="QCustomPlot" name="cpl_fuzzy_pids_graph" native="true"/>
            </item>
           </layout>
          </item>
