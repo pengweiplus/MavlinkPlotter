@@ -18,12 +18,12 @@ public:
     ~turningWindows();
 
 private slots:
-    void on_tbv_fuzzy_pids_table_changed();
-    void on_btn_fuzzy_pids_refresh_screen_clicked();
-    void on_cbox_fuzzy_pids_axis_items_changed(int index);
-    void on_cbox_fuzzy_pids_ctrl_items_changed(int index);
-    void on_hs_fuzzy_pids_derror_changed(int val);
-    void on_dsb_fuzzy_pids_derror_changed(double val);
+    void tbv_fuzzy_pids_table_changed();
+    void btn_fuzzy_pids_refresh_screen_clicked();
+    void cbox_fuzzy_pids_axis_items_changed(int index);
+    void cbox_fuzzy_pids_ctrl_items_changed(int index);
+    void hs_fuzzy_pids_derror_changed(int val);
+    void dsb_fuzzy_pids_derror_changed(double val);
 
 private:
     Ui::turningWindows *ui;                 //UI界面

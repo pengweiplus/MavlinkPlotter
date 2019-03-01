@@ -35,8 +35,7 @@
 #include <QStandardItemModel>
 #include <QColorDialog>
 
-#include "helpwindow.hpp"
-#include "settingWindow.h"
+#include "commSetting/commSetting.h"
 #include "turningSetting/turningWindows.h"
 
 
@@ -69,26 +68,32 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_stopPlotButton_clicked();                                                     // Starts and stops plotting
-    void on_resetPlotButton_clicked();                                                    // Resets plot to initial zoom and coordinates
-    void on_saveDataLogButton_clicked();                                                  // start log data
+    //图形控件相关事件
+    void on_stopPlotButton_clicked();                              // 停止2D图形绘制
+    void on_resetPlotButton_clicked();                             // 复位2D图形x-y的缩放
+    void replot();                                                 // Slot for repainting the plot
+    void cboxAxisXPointesChanged(const QString &text);
 
-    void onMouseMoveInPlot(QMouseEvent *event);                                           // Displays coordinates of mouse pointer when clicked in plot in status bar
-    void replot();                                                                        // Slot for repainting the plot
+    //日志
+    void on_saveDataLogButton_clicked();                           // 日志记录
 
-    void on_actionAntenna_triggered();
-    void on_actionHow_to_use_triggered();
+    //目录点击事件
     void on_actionCommLinks_triggered();
     void on_actionTurning_triggered();
-    void on_cbox_axis_x_pointes_changed(const QString &text);
-    void new_mavlink_msg(mavlink_message_t *msg);
-    void on_treeview_refresh();
-    void treeItemChanged(QStandardItem * item);
+
+    //树型列表控件相关事件
+    void newMavlinkMsg(mavlink_message_t *msg);
+    void treeviewRefresh();
+    void treeViewItemChanged(QStandardItem * item);
 
     //commlink windows
-    void on_sig_comm_connect();
-    void on_sig_comm_disconnect();
+    void commConnect();
+    void commDisconnect();
 
+    //鼠标事件
+    void mousePress(QMouseEvent* mevent);
+    void mouseMove(QMouseEvent *mevent);
+    void mouseRelease(QMouseEvent *mevent);
 
 signals:
     void portOpenFail();                                                                  // Emitted when cannot open port
@@ -108,20 +113,21 @@ private:
     QTimer treeviewTimer;                                                                 // Timer used for replotting the treeview
     int NUMBER_OF_POINTS;                                                                 // Number of points plotted
     int FREQ_OF_REFRESH;                                                                  // Frequence of plotted [Unit:ms]
+    QRubberBand *rubberBand;
+    QPoint rubberOrigin;
 
     //Graph
     QMap<uint32_t,QColor> mapPlotGraph;                                                   // QCustomPlot Graph numbe map for color
 
     //windows
-    HelpWindow *helpWindow;                                                               // Help windows
-    settingWindow *setupWindow;                                                           // Setup windows
-    turningWindows *turningWindow;                                                        // turningWindows
+    commSetting *mCommSetting;                                                           // Setup windows
+    turningWindows *mTurningWindows;                                                        // turningWindows
 
     //mavlink
     mavPraseThread *mavlinkThread;
     QMap<uint32_t,QString> msgFilesType;                                                  // mavlink msg field data type
     QMap<uint32_t,mavlink_message_t> mapMavlinkMsg;                                       // mavlink msg
-    void setupPlot();                                                                     // Setup the QCustomPlot
+    void setupPlotGraphView();                                                            // Setup the QCustomPlot
     int  allocPlotGraph();                                                                // Alloc the QCustomPlot Graph numbe
     QColor getPlotGraphColor(int num);                                                    // Get the QCustomPlot Graph numbe
     void startRefreshTimer();                                                             // Start the QCustomPlot plot timer
@@ -129,10 +135,14 @@ private:
 
     //treeview
     QStandardItemModel* model;                                                            // Treeview model
-    void initTree();                                                                      // Initialize treeview model
-    bool addNodeItem(QStandardItemModel* model,QStandardItem* nodeProject);               // Add the main-item
-    int addNodeItem(QStandardItem* nodeProject,QString& fieldName,QString& fieldUnit, QString& fieldValue);// Add the main-item and sub-items
-    void treeItemChanged(QStandardItem * item,disMavlinkMsg_t *t);
+    void setupTreeView();                                                                 // Initialize treeview model
+    bool addNodeItem(QStandardItemModel* model,
+                     QStandardItem* nodeProject);                                         // Add the main-item
+    int addNodeItem(QStandardItem* nodeProject,
+                    QString& fieldName,
+                    QString& fieldUnit,
+                    QString& fieldValue);                                                 // Add the main-item and sub-items
+    void treeViewItemChanged(QStandardItem * item,disMavlinkMsg_t *t);
 };
 
 

@@ -1,40 +1,42 @@
-#include "settingWindow.h"
-#include "ui_settingWindow.h"
+#include "commSetting.h"
+#include "ui_commSetting.h"
 
-settingWindow::settingWindow(QWidget *parent) :
+commSetting::commSetting(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::settingWindow)
+    ui(new Ui::commSetting)
 {
     ui->setupUi(this);
     ui->label_setup_status->setText(" ");
     setupSerialUI();        //设置串口窗口
     setupUdplUI();          //设置UDP窗口
 
+    connect(ui->cbox_comm_link,SIGNAL(currentIndexChanged(int)),this,SLOT(cboxCommLinkChanged(int)));
+
 }
 
-settingWindow::~settingWindow()
+commSetting::~commSetting()
 {
     delete ui;
 }
 
 
 ///
-/// \brief settingWindow::closeEvent
+/// \brief commSetting::closeEvent
 /// 窗口关闭前事件
 /// \param event
 ///
-void settingWindow::closeEvent(QCloseEvent *event)
+void commSetting::closeEvent(QCloseEvent *event)
 {
     ui->label_setup_status->setText(" ");
 }
 
 
 ///
-/// \brief settingWindow::setupSerialUI
+/// \brief commSetting::setupSerialUI
 /// 初始化串口设置界面
 /// \return
 ///
-bool settingWindow::setupSerialUI()
+bool commSetting::setupSerialUI()
 {
 
     int serialPorts = QSerialPortInfo::availablePorts().size();
@@ -50,21 +52,21 @@ bool settingWindow::setupSerialUI()
 }
 
 ///
-/// \brief settingWindow::setupUdplUI
+/// \brief commSetting::setupUdplUI
 /// 初始化udp设置界面
 /// \return
 ///
-bool settingWindow::setupUdplUI()
+bool commSetting::setupUdplUI()
 {
 
     return true;
 }
 
 ///
-/// \brief settingWindow::setCommLinkInfo
+/// \brief commSetting::setCommLinkInfo
 /// \param res
 ///
-void settingWindow::setCommLinkInfo(bool res)
+void commSetting::setCommLinkInfo(bool res)
 {
     if(res){
         //界面提示
@@ -80,7 +82,7 @@ void settingWindow::setCommLinkInfo(bool res)
 }
 
 ///
-/// \brief settingWindow::on_btn_comm_connect_released
+/// \brief commSetting::on_btn_comm_connect_released
 /// 连接数据通道,启动工作线程
 ///  * 1.尝试连接通信端口(serial/udp)
 ///  *      1)若硬件连接成功,进入步骤2
@@ -93,7 +95,7 @@ void settingWindow::setCommLinkInfo(bool res)
 ///  *      3)互斥显示connect和disconnect
 ///
 
-void settingWindow::on_btn_comm_connect_released()
+void commSetting::on_btn_comm_connect_released()
 {
 
    //1.设置接口参数
@@ -151,7 +153,7 @@ void settingWindow::on_btn_comm_connect_released()
     emit sig_comm_connect();
 }
 
-//void settingWindow::on_btn_comm_connect_released()
+//void commSetting::on_btn_comm_connect_released()
 //{
 
 //    //实例化一个工作线程
@@ -256,7 +258,7 @@ void settingWindow::on_btn_comm_connect_released()
 
 
 ///
-/// \brief settingWindow::on_btn_comm_disconnect_released
+/// \brief commSetting::on_btn_comm_disconnect_released
 /// *  关闭数据通道,清空数据
 /// * 1.关闭工作进程
 /// *      1)如果关闭失败,窗口提示失败原因
@@ -268,11 +270,11 @@ void settingWindow::on_btn_comm_connect_released()
 /// *      2)关闭成功互斥显示connect和disconnect
 ///
 ///
-void settingWindow::on_btn_comm_disconnect_released()
+void commSetting::on_btn_comm_disconnect_released()
 {
     emit sig_comm_disconnect();
 }
-//void settingWindow::on_btn_comm_disconnect_released()
+//void commSetting::on_btn_comm_disconnect_released()
 //{
 //    switch(ui->cbox_comm_link->currentIndex())
 //    {
@@ -312,3 +314,12 @@ void settingWindow::on_btn_comm_disconnect_released()
 //        }
 //    }
 //}
+
+///
+/// \brief commSetting::cboxCommLinkChanged
+/// \param index
+///
+void commSetting::cboxCommLinkChanged(int index)
+{
+    ui->tab_comm->setCurrentIndex(index);
+}

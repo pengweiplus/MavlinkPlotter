@@ -33,55 +33,37 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    connected(false), plotting(false),logging(false),dataPointNumber(0), NUMBER_OF_POINTS(500),FREQ_OF_REFRESH(20),mavlinkThread(NULL)
+    connected(false),
+    plotting(false),
+    logging(false),
+    dataPointNumber(0),
+    NUMBER_OF_POINTS(500),
+    FREQ_OF_REFRESH(20),
+    mavlinkThread(NULL)
 {
     ui->setupUi(this);
-    ui->plot->setBackground(QBrush(QColor(48,47,47)));                                    // Background for the plot area
-    setupPlot();                                                                          // Setup plot area
-    ui->plot->setNotAntialiasedElements(QCP::aeAll);                                      // used for higher performance (see QCustomPlot real time example)
-    QFont font;
-    font.setStyleStrategy(QFont::NoAntialias);
-    ui->plot->xAxis->setTickLabelFont(font);
-    ui->plot->yAxis->setTickLabelFont(font);
-    ui->plot->legend->setFont(font);
 
-    ui->plot->yAxis->setAutoTickStep(true);                                               // User can change tick step with a spin box
-    ui->plot->yAxis->setTickStep(100);                                                    // Set initial tick step
-    ui->plot->xAxis->setTickLabelColor(QColor(170,170,170));                              // Tick labels color
-    ui->plot->yAxis->setTickLabelColor(QColor(170,170,170));                              // See QCustomPlot examples / styled demo
-    ui->plot->xAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::NoPen));
-    ui->plot->yAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::DotLine));
-    ui->plot->xAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
-    ui->plot->yAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
-    ui->plot->xAxis->grid()->setSubGridVisible(true);
-    ui->plot->yAxis->grid()->setSubGridVisible(true);
-    ui->plot->xAxis->setBasePen(QPen(QColor(170,170,170)));
-    ui->plot->yAxis->setBasePen(QPen(QColor(170,170,170)));
-    ui->plot->xAxis->setTickPen(QPen(QColor(170,170,170)));
-    ui->plot->yAxis->setTickPen(QPen(QColor(170,170,170)));
-    ui->plot->xAxis->setSubTickPen(QPen(QColor(170,170,170)));
-    ui->plot->yAxis->setSubTickPen(QPen(QColor(170,170,170)));
-    ui->plot->xAxis->setUpperEnding(QCPLineEnding::esSpikeArrow);
-    ui->plot->yAxis->setUpperEnding(QCPLineEnding::esSpikeArrow);
-    ui->plot->setInteraction(QCP::iRangeDrag, true);
-    ui->plot->setInteraction(QCP::iRangeZoom, true);
-
-    connect(ui->plot, SIGNAL(mouseRelease(QMouseEvent*)), this, SLOT(onMouseMoveInPlot(QMouseEvent*)));
+    //初始化设置2D图形界面
+    setupPlotGraphView();
     connect(&updateTimer, SIGNAL(timeout()), this, SLOT(replot()));
 
-    //实例化帮助窗口类
-    helpWindow = new HelpWindow(this);
-    helpWindow->setWindowTitle("How to use this application");
+    //初始化QRubberBand
+    rubberBand = new QRubberBand(QRubberBand::Rectangle, ui->plot);
+
+    //鼠标事件
+    connect(ui->plot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress(QMouseEvent*)));
+    connect(ui->plot, SIGNAL(mouseMove(QMouseEvent*)), this, SLOT(mouseMove(QMouseEvent*)));
+    connect(ui->plot, SIGNAL(mouseRelease(QMouseEvent*)), this, SLOT(mouseRelease(QMouseEvent*)));
 
     //实例化通信接口设置类
-    setupWindow = new settingWindow(this);
-    setupWindow->setWindowTitle("Comm Link Settings");
-    connect(setupWindow,SIGNAL(sig_comm_connect()),this,SLOT(on_sig_comm_connect()));
-    connect(setupWindow,SIGNAL(sig_comm_disconnect()),this,SLOT(on_sig_comm_disconnect()));
+    mCommSetting = new commSetting(this);
+    mCommSetting->setWindowTitle("Comm Link Settings");
+    connect(mCommSetting,SIGNAL(sig_comm_connect()),this,SLOT(commConnect()));
+    connect(mCommSetting,SIGNAL(sig_comm_disconnect()),this,SLOT(commDisconnect()));
 
     //实例化调试窗口类
-    turningWindow = new turningWindows(this);
-    turningWindow->setWindowTitle("Turning Settings");
+    mTurningWindows = new turningWindows(this);
+    mTurningWindows->setWindowTitle("Turning Settings");
 
     //初始化mavlink工作线程
     mavlinkThread = new mavPraseThread();
@@ -98,10 +80,10 @@ MainWindow::MainWindow(QWidget *parent) :
     msgFilesType.insert(MAVLINK_TYPE_DOUBLE,"double");
 
     //初始化树形列表
-    initTree();
-    connect(&treeviewTimer,SIGNAL(timeout()),this,SLOT(on_treeview_refresh()));
-    connect(mavlinkThread,SIGNAL(sigNewMavlinkMsg(mavlink_message_t *)),this,SLOT(new_mavlink_msg(mavlink_message_t *)));
-    connect(ui->cbox_axis_x_pointes,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(on_cbox_axis_x_pointes_changed(const QString &)));
+    setupTreeView();
+    connect(&treeviewTimer,SIGNAL(timeout()),this,SLOT(treeviewRefresh()));
+    connect(mavlinkThread,SIGNAL(sigNewMavlinkMsg(mavlink_message_t *)),this,SLOT(newMavlinkMsg(mavlink_message_t *)));
+    connect(ui->cbox_axis_x_pointes,SIGNAL(currentIndexChanged(const QString &)),this,SLOT(cboxAxisXPointesChanged(const QString &)));
 }
 /******************************************************************************************************************/
 
@@ -120,21 +102,64 @@ MainWindow::~MainWindow()
 /******************************************************************************************************************/
 /* The plot area */
 /******************************************************************************************************************/
+//------custemplot 2D图
+
 ///
-/// \brief MainWindow::setupPlot
+/// \brief MainWindow::setupPlotGraphView
+/// 设置QCustemPlot界面属性
 ///
-void MainWindow::setupPlot()
+void MainWindow::setupPlotGraphView()
 {
+    //设置背景颜色
+    ui->plot->setBackground(QBrush(QColor(48,47,47)));              // Background for the plot area
+
+    //设置x-y轴参数
     ui->plot->clearItems();                                         // Remove everything from the plot
     ui->plot->yAxis->setTickStep(10);                               // Set tick step according to user spin box
     ui->plot->yAxis->setRange(-200, 200);                           // Set lower and upper plot range
     ui->plot->xAxis->setRange(0, NUMBER_OF_POINTS);                 // Set x axis range for specified number of points
     ui->plot->setPlottingHints(QCP::phFastPolylines);               // Graph/Curve lines are drawn with a faster method.
 
+    //设置为高性能绘图模式
+    ui->plot->setNotAntialiasedElements(QCP::aeAll);                // used for higher performance (see QCustomPlot real time example)
+
+    //设置字体
+    QFont font;
+    font.setStyleStrategy(QFont::NoAntialias);
+    ui->plot->xAxis->setTickLabelFont(font);
+    ui->plot->yAxis->setTickLabelFont(font);
+    ui->plot->legend->setFont(font);
+
+    //设置刻度（自动大小、颜色）
+    ui->plot->yAxis->setAutoTickStep(true);                                               // User can change tick step with a spin box
+    ui->plot->yAxis->setTickStep(100);                                                    // Set initial tick step
+    ui->plot->xAxis->setTickLabelColor(QColor(170,170,170));                              // Tick labels color
+    ui->plot->yAxis->setTickLabelColor(QColor(170,170,170));                              // See QCustomPlot examples / styled demo
+
+    //设置主、副网格属性（颜色、可见性）
+    ui->plot->xAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::NoPen));
+    ui->plot->yAxis->grid()->setPen(QPen(QColor(170,170,170), 1, Qt::DotLine));
+    ui->plot->xAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
+    ui->plot->yAxis->grid()->setSubGridPen(QPen(QColor(80,80,80), 1, Qt::NoPen));
+    ui->plot->xAxis->grid()->setSubGridVisible(true);
+    ui->plot->yAxis->grid()->setSubGridVisible(true);
+
+    //设置x-y轴（颜色、箭头、鼠标拖拽、滚轮缩放）
+    ui->plot->xAxis->setBasePen(QPen(QColor(170,170,170)));
+    ui->plot->yAxis->setBasePen(QPen(QColor(170,170,170)));
+    ui->plot->xAxis->setTickPen(QPen(QColor(170,170,170)));
+    ui->plot->yAxis->setTickPen(QPen(QColor(170,170,170)));
+    ui->plot->xAxis->setSubTickPen(QPen(QColor(170,170,170)));
+    ui->plot->yAxis->setSubTickPen(QPen(QColor(170,170,170)));
+    ui->plot->xAxis->setUpperEnding(QCPLineEnding::esSpikeArrow);
+    ui->plot->yAxis->setUpperEnding(QCPLineEnding::esSpikeArrow);
+    ui->plot->setInteraction(QCP::iRangeDrag, true);
+    ui->plot->setInteraction(QCP::iRangeZoom, true);
 }
 
 ///
 /// \brief MainWindow::allocPlotGraph
+/// 申请QCustemPlot图层编号
 /// \return
 ///
 int MainWindow::allocPlotGraph()
@@ -146,6 +171,12 @@ int MainWindow::allocPlotGraph()
     return ui->plot->graphCount() - 1;
 }
 
+///
+/// \brief MainWindow::getPlotGraphColor
+/// 获取图层画笔颜色
+/// \param num
+/// \return
+///
 QColor MainWindow::getPlotGraphColor(int num)
 {
     return mapPlotGraph.find(num).value();
@@ -153,6 +184,7 @@ QColor MainWindow::getPlotGraphColor(int num)
 
 ///
 /// \brief MainWindow::replot
+/// 绘制2D图形界面
 ///
 void MainWindow::replot()
 {
@@ -177,34 +209,7 @@ void MainWindow::replot()
             ui->plot->graph(j.value().graphNum)->setPen(QPen(graphPen));
             ui->plot->graph(j.value().graphNum)->addData(dataPointNumber, (j.value().rtValue  + j.value().offsetNum) * j.value().mulitNum );
             ui->plot->graph(j.value().graphNum)->removeDataBefore(dataPointNumber - NUMBER_OF_POINTS);
-
-            //格式化打印log信息
-            if(logging){
-
-                QString field = QString(j.value().msgName)\
-                                +"."+QString(j.value().fieldName) \
-                                +"      "\
-                                + QString::number(j.value().rtValue)\
-                                +'\n';
-
-                f_msg_dield.append(field.data(),field.length());
-            }
         }
-    }
-
-    //记录log
-    if(!filePath.isEmpty() && logging){
-
-        QFile file(filePath);
-        QTextStream stream(&file);
-
-        //打开log文件并写入log
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
-        stream << f_msg_dield << endl;
-        f_msg_dield.clear();
-
-        //关闭日志文件
-        file.close();
     }
 
     dataPointNumber ++;
@@ -228,9 +233,13 @@ void MainWindow::on_stopPlotButton_clicked()
         plotting = false;
         ui->stopPlotButton->setText("Start Plot");
     } else {                                                                              // Start plotting
-        updateTimer.start();                                                              // Start updating plot timer
-        plotting = true;
-        ui->stopPlotButton->setText("Stop Plot");
+
+        //只有在建立连接的情况下，才能启动
+        if(connected == true){
+            updateTimer.start();                                                              // Start updating plot timer
+            plotting = true;
+            ui->stopPlotButton->setText("Stop Plot");
+        }
     }
 }
 ///
@@ -277,23 +286,10 @@ void MainWindow::on_resetPlotButton_clicked()
 }
 
 ///
-/// \brief MainWindow::onMouseMoveInPlot
-/// \param event
-///
-void MainWindow::onMouseMoveInPlot(QMouseEvent *event)
-{
-    int xx = ui->plot->xAxis->pixelToCoord(event->x());
-    int yy = ui->plot->yAxis->pixelToCoord(event->y());
-    QString coordinates("X: %1 Y: %2");
-    coordinates = coordinates.arg(xx).arg(yy);
-    ui->statusBar->showMessage(coordinates);
-}
-
-///
 /// \brief MainWindow::on_actioncbox_axis_x_pointes_Changed
 /// \param text
 ///
-void MainWindow::on_cbox_axis_x_pointes_changed(const QString &text)
+void MainWindow::cboxAxisXPointesChanged(const QString &text)
 {
      QStringList list_time = text.split(' ');
      QString pointCnt = list_time.at(0);
@@ -311,9 +307,9 @@ void MainWindow::on_cbox_axis_x_pointes_changed(const QString &text)
 }
 
 ///
-/// \brief MainWindow::initTree
+/// \brief MainWindow::setupTreeView
 ///
-void MainWindow::initTree()
+void MainWindow::setupTreeView()
 {
     //QStandardItemModelei,负责组织数据,形成列表或者树,供其他视图类显示
     ui->treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -323,7 +319,7 @@ void MainWindow::initTree()
     model->setHorizontalHeaderLabels(QStringList()<<QStringLiteral("Parameter")<<QStringLiteral("Unit")<<QStringLiteral("Value")<<QStringLiteral("Multi")<<QStringLiteral("Offset"));
 
     //关联项目属性改变的信号和槽
-//    connect(model,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(treeItemChanged(QStandardItem*)));
+//    connect(model,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(treeViewItemChanged(QStandardItem*)));
     ui->treeView->setModel(model);
 }
 
@@ -418,10 +414,10 @@ void MainWindow::stopRefreshTimer()
 }
 
 ///
-/// \brief MainWindow::on_treeview_refresh
+/// \brief MainWindow::treeviewRefresh
 /// 定时刷新treeview表格
 ///
-void MainWindow::on_treeview_refresh()
+void MainWindow::treeviewRefresh()
 {
     static qint64 timestamp_last = 0;
     bool is_freq_1hz = false;
@@ -470,7 +466,7 @@ void MainWindow::on_treeview_refresh()
                 tt->offsetNum = itemMsg->child(itemField->row(),4)->text().toDouble();
 
                 //刷新复选框
-                treeItemChanged(itemField,tt);
+                treeViewItemChanged(itemField,tt);
             }
         }
     }
@@ -478,10 +474,10 @@ void MainWindow::on_treeview_refresh()
 
 
 ///
-/// \brief MainWindow::new_mavlink_msg
+/// \brief MainWindow::newMavlinkMsg
 /// \param msg
 ///
-void MainWindow::new_mavlink_msg(mavlink_message_t *msg)
+void MainWindow::newMavlinkMsg(mavlink_message_t *msg)
 {
     const mavlink_message_info_t *msgInfo;
     //提取消息信息
@@ -526,13 +522,13 @@ void MainWindow::new_mavlink_msg(mavlink_message_t *msg)
 
 
 ///
-/// \brief MainWindow::treeItemChanged
+/// \brief MainWindow::treeViewItemChanged
 /// \param item
 ///
 
 #define RANDOM_COLOR 1
 
-void MainWindow::treeItemChanged(QStandardItem * item)
+void MainWindow::treeViewItemChanged(QStandardItem * item)
 {
     if(item == nullptr)
         return;
@@ -595,11 +591,11 @@ void MainWindow::treeItemChanged(QStandardItem * item)
 }
 
 ///
-/// \brief MainWindow::treeItemChanged
+/// \brief MainWindow::treeViewItemChanged
 /// \param item
 /// \param t
 ///
-void MainWindow::treeItemChanged(QStandardItem * item,disMavlinkMsg_t *t)
+void MainWindow::treeViewItemChanged(QStandardItem * item,disMavlinkMsg_t *t)
 {
 
     if(item == nullptr)
@@ -660,26 +656,6 @@ void MainWindow::treeItemChanged(QStandardItem * item,disMavlinkMsg_t *t)
 }
 
 
-
-/******************************************************************************************************************/
-/* How to use window with instructions */
-/******************************************************************************************************************/
-///
-/// \brief MainWindow::on_actionHow_to_use_triggered
-///
-void MainWindow::on_actionHow_to_use_triggered()
-{
-    helpWindow->show();
-}
-
-void MainWindow::on_actionAntenna_triggered()
-{
-    QWidget * view3D = new QWidget;
-
-    view3D->show();
-}
-
-
 /******************************************************************************************************************/
 /* settingWindows */
 /******************************************************************************************************************/
@@ -689,7 +665,7 @@ void MainWindow::on_actionAntenna_triggered()
 ///
 void MainWindow::on_actionCommLinks_triggered()
 {
-    setupWindow->show();
+    mCommSetting->show();
 }
 
 ///
@@ -697,13 +673,13 @@ void MainWindow::on_actionCommLinks_triggered()
 ///
 void MainWindow::on_actionTurning_triggered()
 {
-    turningWindow->show();
+    mTurningWindows->show();
 }
 
 ///
-/// \brief MainWindow::on_sig_comm_connect
+/// \brief MainWindow::commConnect
 ///
-void MainWindow::on_sig_comm_connect()
+void MainWindow::commConnect()
 {
     //实例化一个工作线程
     if(mavlinkThread == NULL){
@@ -711,24 +687,24 @@ void MainWindow::on_sig_comm_connect()
     }
 
    //1.尝试连接硬件接口
-    switch(setupWindow->commlinkType)
+    switch(mCommSetting->commlinkType)
     {
         //serial
         case HW_SERIAL:
         {
 
             //1.1连接成功,启动数据处理线程
-            if(mavlinkThread->setupHardIf(setupWindow->portInfo,
-                                          setupWindow->baudRate,
-                                          setupWindow->dataBits,
-                                          setupWindow->parity,
-                                          setupWindow->stopBits) == true) {
+            if(mavlinkThread->setupHardIf(mCommSetting->portInfo,
+                                          mCommSetting->baudRate,
+                                          mCommSetting->dataBits,
+                                          mCommSetting->parity,
+                                          mCommSetting->stopBits) == true) {
 
                 //启动工作线程
                 mavlinkThread->start();
 
                 //界面提示
-                setupWindow->setCommLinkInfo(true);
+                mCommSetting->setCommLinkInfo(true);
 
                 //启动plot刷新和treeview刷新
                 startRefreshTimer();
@@ -741,7 +717,7 @@ void MainWindow::on_sig_comm_connect()
                 mavlinkThread = NULL;
 
                 //界面提示
-                setupWindow->setCommLinkInfo(false);
+                mCommSetting->setCommLinkInfo(false);
             }
 
         }break;
@@ -750,13 +726,13 @@ void MainWindow::on_sig_comm_connect()
         case HW_UDP:
         {
                 //设置socket 参数
-                bool ret = mavlinkThread->setupHardIf(setupWindow->udp_port);
+                bool ret = mavlinkThread->setupHardIf(mCommSetting->udp_port);
                 if(ret){
                     //启动工作线程
                     mavlinkThread->start();
 
                     //界面提示
-                    setupWindow->setCommLinkInfo(true);
+                    mCommSetting->setCommLinkInfo(true);
 
                     //启动plot刷新和treeview刷新
                     startRefreshTimer();
@@ -767,7 +743,7 @@ void MainWindow::on_sig_comm_connect()
                     mavlinkThread = NULL;
 
                     //界面提示
-                    setupWindow->setCommLinkInfo(false);
+                    mCommSetting->setCommLinkInfo(false);
                 }
 
         }break;
@@ -780,9 +756,9 @@ void MainWindow::on_sig_comm_connect()
 }
 
 ///
-/// \brief MainWindow::on_sig_comm_disconnect
+/// \brief MainWindow::commDisconnect
 ///
-void MainWindow::on_sig_comm_disconnect()
+void MainWindow::commDisconnect()
 {
     //删除一个工作线程
     if(mavlinkThread == NULL){
@@ -790,7 +766,7 @@ void MainWindow::on_sig_comm_disconnect()
     }
 
     //1.关闭serial端口
-    switch(setupWindow->commlinkType)
+    switch(mCommSetting->commlinkType)
     {
         //serial
         case HW_SERIAL:
@@ -814,12 +790,59 @@ void MainWindow::on_sig_comm_disconnect()
     mavlinkThread->exit();
 
     //3.界面显示
-    setupWindow->setCommLinkInfo(false);
+    mCommSetting->setCommLinkInfo(false);
 
     //4.关闭界面刷新
     stopRefreshTimer();
 }
 
 
+/******************************************************************************************************************/
+/* mouse event */
+/******************************************************************************************************************/
+void MainWindow::mousePress(QMouseEvent* mevent)
+{ 
+    if(mevent->button() == Qt::RightButton && plotting == false && connected == true)
+    {
+        rubberOrigin = mevent->pos();
+        rubberBand->setGeometry(QRect(rubberOrigin, QSize()));
+        rubberBand->show();
+    }
+}
 
+void MainWindow::mouseMove(QMouseEvent *mevent)
+{
+    if(rubberBand->isVisible() && plotting == false && connected == true)
+            rubberBand->setGeometry(QRect(rubberOrigin, mevent->pos()).normalized());
+}
+
+void MainWindow::mouseRelease(QMouseEvent *mevent)
+{
+
+    Q_UNUSED(mevent);
+    if (rubberBand->isVisible() && plotting == false && connected == true)
+    {
+        const QRect zoomRect = rubberBand->geometry();
+        int xp1, yp1, xp2, yp2;
+        zoomRect.getCoords(&xp1, &yp1, &xp2, &yp2);
+        double x1 = ui->plot->xAxis->pixelToCoord(xp1);
+        double x2 = ui->plot->xAxis->pixelToCoord(xp2);
+        double y1 = ui->plot->yAxis->pixelToCoord(yp1);
+        double y2 = ui->plot->yAxis->pixelToCoord(yp2);
+
+        ui->plot->xAxis->setRange(x1, x2);
+        ui->plot->yAxis->setRange(y1, y2);
+
+        rubberBand->hide();
+        ui->plot->replot();
+    }
+
+    if(mevent->button() == Qt::LeftButton){
+        int xx = ui->plot->xAxis->pixelToCoord(mevent->x());
+        int yy = ui->plot->yAxis->pixelToCoord(mevent->y());
+        QString coordinates("X: %1 Y: %2");
+        coordinates = coordinates.arg(xx).arg(yy);
+        ui->statusBar->showMessage(coordinates);
+    }
+}
 

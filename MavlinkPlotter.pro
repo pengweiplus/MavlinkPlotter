@@ -15,20 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
         qcustomplot.cpp \
-    helpwindow.cpp \
-    settingWindow.cpp \
     mavPraseThread.cpp \
-    commConfig.cpp \
-    io_manager.cpp \
-    msg_disposer.cpp \
-    msg_prase_thread.cpp \
     turningSetting/turningWindows.cpp \
-    turningSetting/algorithmFuzzyPid.cpp
+    turningSetting/algorithmFuzzyPid.cpp \
+    commSetting/commSetting.cpp
 
 HEADERS  += mainwindow.hpp \
                 qcustomplot.h \
-    helpwindow.hpp \
-    settingWindow.h \
     mavPraseThread.h \
     mavlink/checksum.h \
     mavlink/mavlink_conversions.h \
@@ -39,7 +32,6 @@ HEADERS  += mainwindow.hpp \
     mavlink/message.hpp \
     mavlink/msgmap.hpp \
     mavlink/protocol.h \
-    commConfig.h \
     mavlink/checksum.h \
     mavlink/mavlink_conversions.h \
     mavlink/mavlink_get_info.h \
@@ -84,17 +76,14 @@ HEADERS  += mainwindow.hpp \
     mavlink/message.hpp \
     mavlink/msgmap.hpp \
     mavlink/protocol.h \
-    io_manager.h \
-    msg_disposer.h \
-    msg_prase_thread.h \
     turningSetting/turningWindows.h \
-    turningSetting/algorithmFuzzyPid.h
+    turningSetting/algorithmFuzzyPid.h \
+    commSetting/commSetting.h
 
 
 FORMS    += mainwindow.ui \
-    helpwindow.ui \
-    settingWindow.ui \
-    turningSetting/ui/turningWindows.ui
+    turningSetting/ui/turningWindows.ui \
+    commSetting/ui/commSetting.ui
 
 RC_FILE = myapp.rc
 

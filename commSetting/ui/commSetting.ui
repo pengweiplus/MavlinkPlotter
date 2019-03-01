@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>settingWindow</class>
- <widget class="QWidget" name="settingWindow">
+ <class>commSetting</class>
+ <widget class="QWidget" name="commSetting">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -235,8 +235,8 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>1</x>
-         <y>1</y>
+         <x>11</x>
+         <y>8</y>
          <width>250</width>
          <height>27</height>
         </rect>
@@ -256,15 +256,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="ledit_udp_address"/>
+         <widget class="QLineEdit" name="ledit_udp_address">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="statusTip">
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>53</y>
+         <x>10</x>
+         <y>60</y>
          <width>250</width>
          <height>27</height>
         </rect>
@@ -304,6 +311,14 @@
          <width>200</width>
          <height>0</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+         <underline>true</underline>
+        </font>
        </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>

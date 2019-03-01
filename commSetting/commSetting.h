@@ -1,5 +1,5 @@
-#ifndef SETTINGWINDOW_H
-#define SETTINGWINDOW_H
+#ifndef COMM_SETTING_H
+#define COMM_SETTING_H
 
 #include <QDialog>
 
@@ -15,16 +15,16 @@
 #include "mavPraseThread.h"
 
 namespace Ui {
-class settingWindow;
+class commSetting;
 }
 
-class settingWindow : public QDialog
+class commSetting : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit settingWindow(QWidget *parent = 0);
-    ~settingWindow();
+    explicit commSetting(QWidget *parent = 0);
+    ~commSetting();
 
     bool setupSerialUI();
     bool setupUdplUI();
@@ -54,9 +54,10 @@ signals:
 private slots:
     void on_btn_comm_connect_released();
     void on_btn_comm_disconnect_released();
+    void cboxCommLinkChanged(int index);
 
 private:
-    Ui::settingWindow *ui;
+    Ui::commSetting *ui;
 };
 
-#endif // SETTINGWINDOW_H
+#endif // COMM_SETTING_H

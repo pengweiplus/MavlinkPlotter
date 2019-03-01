@@ -139,7 +139,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,99">
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -170,12 +170,6 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelo">
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="actionHow_to_use"/>
-   </widget>
    <widget class="QMenu" name="menuConfig">
     <property name="title">
      <string>Setup</string>
@@ -192,13 +186,7 @@
    </widget>
    <addaction name="menuConfig"/>
    <addaction name="menu3D"/>
-   <addaction name="menuHelo"/>
   </widget>
-  <action name="actionHow_to_use">
-   <property name="text">
-    <string>How to use </string>
-   </property>
-  </action>
   <action name="actionCommLinks">
    <property name="text">
     <string>Comm Links</string>

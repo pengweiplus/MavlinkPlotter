@@ -16,12 +16,12 @@ turningWindows::turningWindows(QWidget *parent) :
     setupFuzzyPidTabView(ROW,COL);
 
     //Slots
-    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
-    connect(ui->btn_fuzzy_pids_refresh_screen,SIGNAL(clicked()),this,SLOT(on_btn_fuzzy_pids_refresh_screen_clicked()));
-    connect(ui->cbox_fuzzy_pids_axis_items,SIGNAL(currentIndexChanged(int)),this,SLOT(on_cbox_fuzzy_pids_axis_items_changed(int)));
-    connect(ui->cbox_fuzzy_pids_ctrl_items,SIGNAL(currentIndexChanged(int)),this,SLOT(on_cbox_fuzzy_pids_ctrl_items_changed(int)));
-    connect(ui->hs_fuzzy_pids_derror,SIGNAL(valueChanged(int)), this,SLOT(on_hs_fuzzy_pids_derror_changed(int)));
-//    connect(ui->dsb_fuzzy_pids_derror,SIGNAL(valueChanged(double)), this,SLOT(on_dsb_fuzzy_pids_derror_changed(double)));
+    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(tbv_fuzzy_pids_table_changed()));
+    connect(ui->btn_fuzzy_pids_refresh_screen,SIGNAL(clicked()),this,SLOT(btn_fuzzy_pids_refresh_screen_clicked()));
+    connect(ui->cbox_fuzzy_pids_axis_items,SIGNAL(currentIndexChanged(int)),this,SLOT(cbox_fuzzy_pids_axis_items_changed(int)));
+    connect(ui->cbox_fuzzy_pids_ctrl_items,SIGNAL(currentIndexChanged(int)),this,SLOT(cbox_fuzzy_pids_ctrl_items_changed(int)));
+    connect(ui->hs_fuzzy_pids_derror,SIGNAL(valueChanged(int)), this,SLOT(hs_fuzzy_pids_derror_changed(int)));
+//    connect(ui->dsb_fuzzy_pids_derror,SIGNAL(valueChanged(double)), this,SLOT(dsb_fuzzy_pids_derror_changed(double)));
 
 }
 
@@ -445,65 +445,65 @@ void turningWindows::loadFuzzyDataAndReplotGraph()
 //-------pravate slots
 
 ///
-/// \brief turningWindows::on_tbv_fuzzy_pids_table_changed
+/// \brief turningWindows::tbv_fuzzy_pids_table_changed
 /// 槽函数：修改模糊表格
 /// 1、保存修改后的值到对应数据结构
 /// 2、重新绘制图形
 ///
-void turningWindows::on_tbv_fuzzy_pids_table_changed()
+void turningWindows::tbv_fuzzy_pids_table_changed()
 {
     //保存参数到数据结构，并重新绘制图形
     saveFuzzyDataAndReplotGraph();
 }
 
 ///
-/// \brief turningWindows::on_btn_fuzzy_pids_refresh_screen_clicked
+/// \brief turningWindows::btn_fuzzy_pids_refresh_screen_clicked
 /// 槽函数：读取下位机数据
 /// 1、将接收到的数据更新到对应数据结构中
 /// 2、重新绘制图形
 ///
-void turningWindows::on_btn_fuzzy_pids_refresh_screen_clicked()
+void turningWindows::btn_fuzzy_pids_refresh_screen_clicked()
 {
 
 }
 
 
 ///
-/// \brief turningWindows::on_cbox_fuzzy_pids_axis_items_changed
+/// \brief turningWindows::cbox_fuzzy_pids_axis_items_changed
 /// 槽函数：控制轴更新
 /// 1、从对应数据结构中读取出数据
 /// 2、重新绘制图形
 ///
-void turningWindows::on_cbox_fuzzy_pids_axis_items_changed(int index)
+void turningWindows::cbox_fuzzy_pids_axis_items_changed(int index)
 {
     index= index;
-    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(tbv_fuzzy_pids_table_changed()));
     loadFuzzyDataAndReplotGraph();
-    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(tbv_fuzzy_pids_table_changed()));
 }
 
 ///
-/// \brief turningWindows::on_cbox_fuzzy_pids_ctrl_items_changed
+/// \brief turningWindows::cbox_fuzzy_pids_ctrl_items_changed
 /// 槽函数：控制条目更新
 /// 1、从对应数据结构中读取出数据
 /// 2、重新绘制图形
 ///
-void turningWindows::on_cbox_fuzzy_pids_ctrl_items_changed(int index)
+void turningWindows::cbox_fuzzy_pids_ctrl_items_changed(int index)
 {
     index = index;
-    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    disconnect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(tbv_fuzzy_pids_table_changed()));
     loadFuzzyDataAndReplotGraph();
-    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(on_tbv_fuzzy_pids_table_changed()));
+    connect(ui->tbv_fuzzy_pids_table->model(),SIGNAL(itemChanged(QStandardItem*)),this,SLOT(tbv_fuzzy_pids_table_changed()));
 }
 
 ///
-/// \brief turningWindows::on_hs_fuzzy_pids_derror_changed
+/// \brief turningWindows::hs_fuzzy_pids_derror_changed
 /// \param val
 /// 槽函数：微分值手动更新
 /// 1、从对应数据结构中读取出数据
 /// 2、重新绘制图形
 ///
-void turningWindows::on_hs_fuzzy_pids_derror_changed(int val)
+void turningWindows::hs_fuzzy_pids_derror_changed(int val)
 {
     double derror = val/10.0;
     ui->dsb_fuzzy_pids_derror->setValue(derror);
@@ -525,10 +525,10 @@ void turningWindows::on_hs_fuzzy_pids_derror_changed(int val)
 }
 
 ///
-/// \brief turningWindows::on_dsb_fuzzy_pids_derror_changed
+/// \brief turningWindows::dsb_fuzzy_pids_derror_changed
 /// \param val
 ///
-void turningWindows::on_dsb_fuzzy_pids_derror_changed(double val)
+void turningWindows::dsb_fuzzy_pids_derror_changed(double val)
 {
     int tmp = val*10;
 
